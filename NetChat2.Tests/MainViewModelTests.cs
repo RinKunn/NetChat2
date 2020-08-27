@@ -17,7 +17,7 @@ namespace NetChat2.Tests
     {
         private MainViewModel viewmodel = null;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             var builder = new ContainerBuilder();
@@ -66,6 +66,5 @@ namespace NetChat2.Tests
             Assert.AreEqual(2, viewmodel.Messages.Count);
             Assert.AreEqual("message", viewmodel.Messages[1].Text);
         }
-
     }
 }

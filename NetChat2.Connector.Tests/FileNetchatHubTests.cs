@@ -50,5 +50,30 @@ namespace NetChat2.Connector.Tests
             Assert.AreEqual(inputLine, receivedMessages[0].Text);
             Assert.AreEqual(username, receivedMessages[0].UserName);
         }
+
+        [Test]
+        public void OnMessageReceivedRaised_RUS()
+        {
+            string username = Guid.NewGuid().ToString().Substring(0, 5);
+            string inputLine = $"Привет, меня зовут {username}";
+            List<NetChatMessage> receivedMessages = new List<NetChatMessage>();
+            ManualResetEvent statsUpdatedEvent = new ManualResetEvent(false);
+
+            using (var watcher = new FileNetchatHub(path))
+            {
+                watcher.OnMessageReceived += (mess) =>
+                {
+                    receivedMessages.Add(mess);
+                    statsUpdatedEvent.Set();
+                };
+
+                File.AppendAllText(path, (new NetChatMessage(username, inputLine)).ToString() + "\n");
+                statsUpdatedEvent.WaitOne(50, false);
+            }
+
+            Assert.AreEqual(1, receivedMessages.Count);
+            Assert.AreEqual(inputLine, receivedMessages[0].Text);
+            Assert.AreEqual(username, receivedMessages[0].UserName);
+        }
     }
 }

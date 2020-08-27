@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:Converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
-        
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:vm="clr-namespace:NetChat2.ViewModel"
+        xmlns:convrt="clr-namespace:NetChat2.Converters"
         xmlns:local="clr-namespace:NetChat2"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Background="Green"
+        Title="Netchat 2.0" Height="450" Width="800"
+        Style="{StaticResource CustomWindowStyle}"
+        >
     <i:Interaction.Triggers>
         <i:EventTrigger>
             <i:InvokeCommandAction Command="{Binding ConnectCommand}"/>
@@ -19,9 +22,15 @@
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding LogoutCommand}"/>
         </i:EventTrigger>
+        <i:EventTrigger>
+            <i:InvokeCommandAction Command="{Binding ConnectCommand}"/>
+        </i:EventTrigger>
     </i:Interaction.Triggers>
 
     <Window.Resources>
+
+        <convrt:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
+        
         <Style x:Key="SendButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -100,13 +109,32 @@
                 <Setter.Value>
                     <ControlTemplate>
                         <StackPanel>
-                            <Ellipse x:Name="EllipseIndicator" Width="7" Height="7" Fill="Red"/>
+                            <Ellipse x:Name="EllipseIndicator" Width="10" Height="10" Fill="Red"/>
                         </StackPanel>
                         <ControlTemplate.Triggers>
                             <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                 <Setter TargetName="EllipseIndicator" Property="Fill" Value="Green"/>
                             </DataTrigger>
                         </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NewMessagesCount" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="15"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Ellipse Fill="{TemplateBinding Background}" Width="40" Height="40"/>
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Polygon Fill="{TemplateBinding Background}" Points="0 0 34 0 18 20" 
+                                     HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                     Margin="0 0 0 -10"/>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -128,12 +156,22 @@
                       ItemsSource="{Binding Messages}" 
                       ItemTemplate="{DynamicResource MessagesDataTemplate}"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
-            
+            <i:Interaction.Behaviors>
+                <convrt:BringNewItemIntoViewBehavior/>
+            </i:Interaction.Behaviors>
             <ItemsControl.Template>
                 <ControlTemplate TargetType="ItemsControl">
-                    <ScrollViewer>
-                        <ItemsPresenter/>
-                    </ScrollViewer>
+                    <Grid>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                        <Border Background="Gray" Opacity="0.8" Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="Loading..." VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="17"/>
+                        </Border>
+                        <Button Style="{StaticResource NewMessagesCount}" VerticalAlignment="Bottom" 
+                                HorizontalAlignment="Right" Background="Orange"
+                                Visibility="Collapsed"/>
+                    </Grid>
                 </ControlTemplate>
             </ItemsControl.Template>
         </ItemsControl>
@@ -152,7 +190,11 @@
                     <TextBox x:Name="MessageTxtBox" BorderBrush="Transparent"
                                  TextWrapping="Wrap" AcceptsReturn="True" CaretBrush="#7F000000"
                                  VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SendMessageCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </Border>
                 
                 <!--Send-->

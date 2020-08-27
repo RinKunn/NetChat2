@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace NetChat2.Connector
 {
@@ -12,9 +13,7 @@ namespace NetChat2.Connector
 
         event OnMessageReceivedHandler OnMessageReceived;
         void SendMessage(NetChatMessage message);
-        Task SendMessageAsync(NetChatMessage message);
-
-
-        Task<IEnumerable<NetChatMessage>> LoadMessages();
+        Task SendMessageAsync(NetChatMessage message, CancellationToken token = default);
+        Task<IEnumerable<NetChatMessage>> LoadMessages(CancellationToken token = default, int count = 0);
     }
 }

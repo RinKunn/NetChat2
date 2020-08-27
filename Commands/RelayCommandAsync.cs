@@ -56,6 +56,7 @@ namespace NetChat2.Commands
         public override Task ExecuteAsync(object parameter)
         {
             Execution = new NotifyTaskCompletion(_command());
+            Console.WriteLine($"ExecuteAsync...");
             return Execution.TaskCompletion;
         }
         // Raises PropertyChanged
@@ -91,39 +92,87 @@ namespace NetChat2.Commands
         public NotifyTaskCompletion<TResult> Execution { get; private set; }
     }
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public class RelayCommandAsync : ICommand
     {
+        private readonly Action<Exception> _onException;
         private readonly Func<Task> _execute;
         private readonly Predicate<object> _canExecute;
-        private bool isExecuting;
+        private bool _isExecuting;
+
+        public bool IsExecuting
+        {
+            get
+            {
+                return _isExecuting;
+            }
+            set
+            {
+                _isExecuting = value;
+                RaiseCanExecuteChanged();
+            }
+        }
 
         public RelayCommandAsync(Func<Task> execute) : this(execute, null) { }
-
-        public RelayCommandAsync(Func<Task> execute, Predicate<object> canExecute)
+        public RelayCommandAsync(Func<Task> execute, Predicate<object> canExecute) : this(execute, canExecute, null) { }
+        public RelayCommandAsync(Func<Task> execute, Predicate<object> canExecute, Action<Exception> onException)
         {
             _execute = execute;
             _canExecute = canExecute;
+            _onException = onException;
         }
 
         public bool CanExecute(object parameter)
         {
-            if (!isExecuting && _canExecute == null) return true;
-            return (!isExecuting && _canExecute(parameter));
+            if (!_isExecuting && _canExecute == null) return true;
+            return (!_isExecuting && _canExecute(parameter));
         }
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add
+            {
+                if (this._canExecute == null)
+                    return;
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                if (this._canExecute == null)
+                    return;
+                CommandManager.RequerySuggested -= value;
+            }
         }
-
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
         public async void Execute(object parameter)
         {
-            isExecuting = true;
-            try { await _execute(); }
-            finally { isExecuting = false; }
+            IsExecuting = true;
+            try 
+            {
+                await _execute();
+            }
+            catch (Exception ex)
+            {
+                _onException?.Invoke(ex);
+            }
+            IsExecuting = false;
         }
     }
 }

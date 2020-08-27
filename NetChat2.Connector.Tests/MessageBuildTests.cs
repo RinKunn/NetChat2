@@ -39,6 +39,16 @@ namespace NetChat2.Connector.Tests
             Assert.AreEqual("Hello! My name > is '5cc > 62'", mes.Text);
         }
 
+        [Test]
+        public void MessageWithNewLines()
+        {
+            string message = "Hello! My \nname\n is 'Tim'";
+            string username = "Tim";
+
+            NetChatMessage mes = new NetChatMessage(username, message);
+
+            Assert.AreEqual("Hello! My name is 'Tim'", mes.Text);
+        }
 
     }
 }

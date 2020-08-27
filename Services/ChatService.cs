@@ -2,28 +2,29 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using NetChat2.Connector;
 using NetChat2.Models;
+using System.Threading;
 
 namespace NetChat2.Services
 {
     public delegate void NewMessageReceivedHandler(Message message);
 
-    public interface IChatService
+    public interface IChatService : IDisposable
     {
         event NewMessageReceivedHandler NewMessageReceived;
 
         Task SendMessageAsync(string message);
-        
         Task ConnectAsync();
-        Task LogoutAsync();
-
-        Task<IEnumerable<Message>> LoadAllMessages();
+        
+        Task<IEnumerable<Message>> LoadAllMessages(int count = 0);
     }
 
     public class ChatService : IChatService
     {
         public event NewMessageReceivedHandler NewMessageReceived;
+        private CancellationTokenSource tokenSource;
         private readonly List<string> _activeUsers;
         private readonly INetchatHub _hub;
         private readonly User _user;
@@ -34,6 +35,7 @@ namespace NetChat2.Services
             _activeUsers = new List<string>();
             _hub = hub ?? throw new ArgumentNullException(nameof(hub));
             _hub.OnMessageReceived += Hub_OnMessageReceived;
+            tokenSource = new CancellationTokenSource();
         }
 
         private void Hub_OnMessageReceived(NetChatMessage message)
@@ -55,20 +57,22 @@ namespace NetChat2.Services
             await _hub.SendMessageAsync(new NetChatMessage(_user.Name, "Logon"));
         }
 
-        public async Task LogoutAsync()
-        {
-            await _hub.SendMessageAsync(new NetChatMessage(_user.Name, "Logout"));
-        }
-
         public async Task SendMessageAsync(string message)
         {
             await _hub.SendMessageAsync(new NetChatMessage(_user.Name, message));
         }
 
-        public async Task<IEnumerable<Message>> LoadAllMessages()
+        public async Task<IEnumerable<Message>> LoadAllMessages(int count = 0)
         {
-            var res = await _hub.LoadMessages();
+            var res = await _hub.LoadMessages(tokenSource.Token, 50);
             return res.Select(message => new Message(message.DateTime, message.UserName, message.Text));
+        }
+
+        public void Dispose()
+        {
+            tokenSource.Cancel();
+            _hub.SendMessage(new NetChatMessage(_user.Name, "Logout"));
+            _hub.Dispose();
         }
     }
 }

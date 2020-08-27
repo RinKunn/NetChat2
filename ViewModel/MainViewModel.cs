@@ -1,13 +1,13 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using NetChat2.Models;
-using System.Collections.ObjectModel;
-using NetChat2.Connector;
-using NetChat2.Services;
 using NetChat2.Commands;
-using System.Threading.Tasks;
-using System;
-using System.Windows.Input;
+using NetChat2.Models;
+using NetChat2.Services;
 
 namespace NetChat2.ViewModel
 {
@@ -15,10 +15,12 @@ namespace NetChat2.ViewModel
     {
         private readonly IChatService _chatService;
 
-        private ObservableCollection<Message> _messages = new ObservableCollection<Message>();
-
-
-        public ObservableCollection<Message> Messages => _messages;
+        private ObservableCollection<Message> _messages;
+        public ObservableCollection<Message> Messages
+        {
+            get => _messages;
+            private set => Set(ref _messages, value);
+        }
 
         private string _textMessage;
         public string TextMessage
@@ -51,48 +53,51 @@ namespace NetChat2.ViewModel
         
 
         //Logon
-        private IAsyncCommand _connectCommand;
-        public IAsyncCommand ConnectCommand => _connectCommand ??
-            (_connectCommand = new AsyncCommand(() => Connect(), (o) => CanLogon()));
+        private ICommand _connectCommand;
+        public ICommand ConnectCommand => _connectCommand ??
+            (_connectCommand = new RelayCommandAsync(Connect, (o) => CanLogon()));
 
         private async Task Connect()
         {
+            await Task.Delay(1000);
+            var res = await _chatService.LoadAllMessages(50);
+
+            App.Current.Dispatcher.Invoke(() =>
+            {   
+                Messages = new ObservableCollection<Message>(res.ToList());
+            });
+
             await _chatService.ConnectAsync();
-            IsConnected = true;
-            var res = await _chatService.LoadAllMessages();
-            _messages = new ObservableCollection<Message>(res);
-            RaisePropertyChanged(nameof(Messages));
+            IsConnected = true;   
         }
         private bool CanLogon() => !IsConnected;
 
 
         // Logout
-        private IAsyncCommand _logoutCommand;
-        public IAsyncCommand LogoutCommand => _logoutCommand ?? 
-            (_logoutCommand = new AsyncCommand(() => Logout(), (o) => CanLogout()));
+        private ICommand _logoutCommand;
+        public ICommand LogoutCommand => _logoutCommand ?? 
+            (_logoutCommand = new RelayCommand(Logout));
 
-        private async Task Logout()
+        private void Logout()
         {
-            await _chatService.LogoutAsync();
+            _chatService.Dispose();
             IsConnected = false;
         }
-        private bool CanLogout() => IsConnected;
-
-
 
         //Send message
-        private IAsyncCommand _sendMessageCommand;
-        public IAsyncCommand SendMessageCommand => _sendMessageCommand ??
-            (_sendMessageCommand = new AsyncCommand(() => SendTextMessage(), (o) => CanSendTextMessage()));
+        private ICommand _sendMessageCommand;
+        public ICommand SendMessageCommand => _sendMessageCommand ??
+            (_sendMessageCommand = new RelayCommandAsync(SendTextMessage, (o) => CanSendTextMessage()));
 
         private async Task SendTextMessage()
         {
             await _chatService.SendMessageAsync(_textMessage);
+            TextMessage = string.Empty;
         }
         private bool CanSendTextMessage()
         {
             return (!string.IsNullOrEmpty(TextMessage) && IsConnected);
         }
-
+        
     }
 }

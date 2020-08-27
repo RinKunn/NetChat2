@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileLastLineReader.cs" />
+    <Compile Include="FileReadHelper.cs" />
     <Compile Include="FileNetchatHub.cs" />
     <Compile Include="INetchatHub.cs" />
     <Compile Include="NetChatMessage.cs" />

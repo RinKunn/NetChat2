@@ -6,9 +6,10 @@
              d1p1:Ignorable="d" 
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
   <Application.Resources>
-    <ResourceDictionary>
-           
-            
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./Styles/WindowStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
   </Application.Resources>
 </Application>

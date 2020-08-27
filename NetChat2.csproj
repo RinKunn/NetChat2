@@ -96,6 +96,9 @@
     </ApplicationDefinition>
     <Compile Include="Commands\NotifyTaskCompletion.cs" />
     <Compile Include="Commands\RelayCommandAsync.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\BringNewItemIntoViewBehavior.cs" />
+    <Compile Include="Styles\WindowStyle.xaml.cs" />
     <Compile Include="DIRegistration.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\User.cs" />
@@ -103,6 +106,10 @@
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Page Include="Styles\WindowStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,7 +124,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -15,10 +15,10 @@ namespace NetChat2
     {
         public static ContainerBuilder RegisterAppServices(this ContainerBuilder builder)
         {
-            builder.RegisterType<ChatService>().As<IChatService>().InstancePerLifetimeScope();
+            builder.RegisterType<ChatService>().As<IChatService>().SingleInstance();
             builder.RegisterType<FileNetchatHub>()
                 .As<INetchatHub>()
-                .WithParameter(new TypedParameter(typeof(string), Path.Combine(Directory.GetCurrentDirectory(), "netchat2.txt")))
+                .WithParameter(new TypedParameter(typeof(string), @"./netchattt2.txt"))
                 .InstancePerLifetimeScope();
             builder.RegisterType<MainViewModel>();
             return builder;

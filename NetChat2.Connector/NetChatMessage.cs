@@ -7,6 +7,7 @@ namespace NetChat2.Connector
     {
         private const string DATE_FORMAT = "dd.MM HH:mm:ss";
         private const int USERNAME_AREA_SIZE = 10;
+
         private DateTime _datetime;
         private string _username;
         private string _message;
@@ -19,7 +20,7 @@ namespace NetChat2.Connector
         {
             _datetime = DateTime.Now;
             _username = username ?? throw new ArgumentNullException(nameof(username));
-            _message = message;
+            _message = message.Replace("\n", " ").Replace("  ", " ");
         }
 
         public NetChatMessage(string line)
@@ -33,7 +34,16 @@ namespace NetChat2.Connector
 
         public override string ToString()
         {
-            return $"{_datetime.ToString(DATE_FORMAT)}|{_username.PadRight(USERNAME_AREA_SIZE)}> {_message}";
+            string res = string.Empty;
+            if(_message.Contains("\n"))
+            {
+                var messages = _message.Split('\n');
+                for(int i = 0; i < messages.Length; i++)
+                    res += $"{_datetime.ToString(DATE_FORMAT)}|{_username.PadRight(USERNAME_AREA_SIZE)}> {_message}" + (i == messages.Length - 1 ? "" : "\n");
+            }
+            else
+                res = $"{_datetime.ToString(DATE_FORMAT)}|{_username.PadRight(USERNAME_AREA_SIZE)}> {_message}";
+            return res;
         }
     }
 }
