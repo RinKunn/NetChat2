@@ -25,11 +25,12 @@ namespace NetChat2.Models
         public string Text => _text;
         public bool IsReaded => _isReaded;
     
-        public Message(DateTime dateTime, string username, string text)
+        public Message(DateTime dateTime, string username, string text, bool isReaded = false)
         {
             _dateTime = dateTime;
             _user = new User(username);
             _text = text;
+            _isReaded = isReaded;
         }
             
         public void Read()

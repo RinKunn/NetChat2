@@ -84,7 +84,8 @@ namespace NetChat2.Converters
 
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                if(ScrollViewerWasOnBottom())
+                NewMessagesCount++;
+                if (ScrollViewerWasOnBottom())
                 {
                     GoToIndex(e.NewStartingIndex);
                 }
@@ -143,7 +144,6 @@ namespace NetChat2.Converters
             set
             {
                 _lastVisibleIndex = value;
-                
                 if(NewMessagesCount > 0)
                 {
                     int firstNewMessageIndex = AssociatedObject.Items.Count - NewMessagesCount;

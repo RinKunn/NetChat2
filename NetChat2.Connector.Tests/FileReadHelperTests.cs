@@ -152,32 +152,6 @@ namespace NetChat2.Connector.Tests
         }
 
 
-        //[Test]
-        //public void Gett()
-        //{
-        //    Dictionary<double, KeyValuePair<DiagnosingResult<string[]>, DiagnosingResult<string[]>>> list 
-        //        = new Dictionary<double, KeyValuePair<DiagnosingResult<string[]>, DiagnosingResult<string[]>>>();
-        //    for (var line = 1e4; line <= 1e5; line += 1e4)
-        //    {
-        //        string file = @"./logsss.txt";
-        //        GenerateFile(file, (long)line);
-        //        var block = new DiagnosingResult<string[]>(() => FileLastLineReader.ReadAllLinesByReadingBlock(file, 100));
-        //        var each = new DiagnosingResult<string[]>(() => FileLastLineReader.ReadAllLinesByReadingEach(file, 100));
-        //        each.Runtest();
-        //        block.Runtest();
-                
-
-        //        list.Add(line, new KeyValuePair<DiagnosingResult<string[]>, DiagnosingResult<string[]>>(block, each));
-        //        File.Delete(file);
-        //    }
-
-        //    foreach (var key in list.Keys)
-        //    {
-        //        Console.WriteLine($"{key}: block: {list[key].Key.ElapsedTime}ms, each: {list[key].Value.ElapsedTime}ms");
-        //    }
-        //}
-
-
         [OneTimeSetUp]
         public void InitFixture()
         {

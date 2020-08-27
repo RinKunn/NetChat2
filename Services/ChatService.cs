@@ -65,7 +65,7 @@ namespace NetChat2.Services
         public async Task<IEnumerable<Message>> LoadAllMessages(int count = 0)
         {
             var res = await _hub.LoadMessages(tokenSource.Token, 50);
-            return res.Select(message => new Message(message.DateTime, message.UserName, message.Text));
+            return res.Select(message => new Message(message.DateTime, message.UserName, message.Text, true));
         }
 
         public void Dispose()

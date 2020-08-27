@@ -103,7 +103,6 @@ namespace NetChat2.Connector
         {
             int DefaultBufferSize = 4096;
             FileOptions DefaultOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
-            Console.WriteLine($"Reading file: {path} with encding {encoding.BodyName}");
             var lines = new List<string>();
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, DefaultBufferSize, DefaultOptions))
             using (var reader = new StreamReader(stream, encoding))

@@ -69,7 +69,7 @@
         </Style>
 
         <DataTemplate x:Key="MessagesDataTemplate">
-            <Border Name="MessageBorder" MinHeight="40" MinWidth="280" BorderThickness="1" Background="#EFEBE9" 
+            <Border Name="MessageBorder" MinHeight="40" MinWidth="280" BorderThickness="1" Background="Orange" 
                     Margin="10,0,60,10" BorderBrush="#BCAAA4" CornerRadius="4" SnapsToDevicePixels="True"
                     HorizontalAlignment="Left">
                 <Grid>
@@ -96,6 +96,21 @@
                 <DataTrigger Binding="{Binding Text}" Value="{x:Null}">
                     <Setter TargetName="MessageTxtBlock" Property="Visibility" Value="Collapsed"/>
                     <Setter TargetName="MessageBorder" Property="MaxWidth" Value="320"/>
+                </DataTrigger>
+                <!---->
+                <DataTrigger Binding="{Binding IsReaded}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation  
+                                    To="#EFEBE9" 
+                                    Storyboard.TargetName="MessageBorder"
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" 
+                                    
+                                    Duration="0:0:2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>

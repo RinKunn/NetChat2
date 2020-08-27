@@ -56,7 +56,6 @@ namespace NetChat2.Commands
         public override Task ExecuteAsync(object parameter)
         {
             Execution = new NotifyTaskCompletion(_command());
-            Console.WriteLine($"ExecuteAsync...");
             return Execution.TaskCompletion;
         }
         // Raises PropertyChanged

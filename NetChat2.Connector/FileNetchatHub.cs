@@ -66,7 +66,6 @@ namespace NetChat2.Connector
         public async Task<IEnumerable<NetChatMessage>> LoadMessages(CancellationToken token = default, int count = 0)
         {
             var lines = await FileReadHelper.ReadAllLinesAsync(_path, encoding, count, token);
-            Console.WriteLine($"count = {lines.Length} from {_path}");
             return lines.Select(l => new NetChatMessage(l));
         }
     }

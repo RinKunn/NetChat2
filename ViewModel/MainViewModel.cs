@@ -61,12 +61,7 @@ namespace NetChat2.ViewModel
         {
             await Task.Delay(1000);
             var res = await _chatService.LoadAllMessages(50);
-
-            App.Current.Dispatcher.Invoke(() =>
-            {   
-                Messages = new ObservableCollection<Message>(res.ToList());
-            });
-
+            Messages = new ObservableCollection<Message>(res.ToList());
             await _chatService.ConnectAsync();
             IsConnected = true;   
         }
