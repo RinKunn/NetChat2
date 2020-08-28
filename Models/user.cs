@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace NetChat2.Models
 {
@@ -7,11 +8,6 @@ namespace NetChat2.Models
         private readonly string _name;
 
         public string Name => _name;
-
-        public User()
-        {
-            _name = Environment.UserName.ToUpper();
-        }
 
         public User(string name)
         {

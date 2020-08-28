@@ -23,15 +23,16 @@ namespace NetChat2.Services
 
     public class ChatService : IChatService
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public event NewMessageReceivedHandler NewMessageReceived;
         private CancellationTokenSource tokenSource;
         private readonly List<string> _activeUsers;
         private readonly INetchatHub _hub;
         private readonly User _user;
 
-        public ChatService(INetchatHub hub)
+        public ChatService(INetchatHub hub, User user)
         {
-            _user = new User();
+            _user = user;
             _activeUsers = new List<string>();
             _hub = hub ?? throw new ArgumentNullException(nameof(hub));
             _hub.OnMessageReceived += Hub_OnMessageReceived;
@@ -48,8 +49,14 @@ namespace NetChat2.Services
             {
                 _activeUsers.Remove(message.UserName);
             }
-
-            NewMessageReceived?.Invoke(new Message(message.DateTime, message.UserName, message.Text));
+            logger.Debug("Recieved new message from '{0}': {1}", message.UserName, message.Text);
+            NewMessageReceived?.Invoke(
+                new Message(
+                    message.DateTime, 
+                    new User(message.UserName), 
+                    message.Text, 
+                    message.UserName == _user.Name,
+                    message.UserName == _user.Name));
         }
 
         public async Task ConnectAsync()
@@ -65,14 +72,17 @@ namespace NetChat2.Services
         public async Task<IEnumerable<Message>> LoadAllMessages(int count = 0)
         {
             var res = await _hub.LoadMessages(tokenSource.Token, 50);
-            return res.Select(message => new Message(message.DateTime, message.UserName, message.Text, true));
+            return res.Select(message => new Message(message.DateTime, new User(message.UserName), message.Text, message.UserName == _user.Name, true));
         }
 
         public void Dispose()
         {
             tokenSource.Cancel();
+            logger.Debug("Disposing. Token cancelled...");
             _hub.SendMessage(new NetChatMessage(_user.Name, "Logout"));
+            logger.Debug("Disposing. Message sended...");
             _hub.Dispose();
+            logger.Debug("Disposing. Hub disposed...");
         }
     }
 }

@@ -78,7 +78,6 @@ namespace NetChat2.Converters
 
         private void ItemsControl_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            
             if(e.Action == NotifyCollectionChangedAction.Reset)
                 GoToIndex(AssociatedObject.Items.Count - 1);
 
@@ -89,10 +88,6 @@ namespace NetChat2.Converters
                 {
                     GoToIndex(e.NewStartingIndex);
                 }
-                else
-                {
-                    ++NewMessagesCount;
-                }
             }
         }
 
@@ -100,7 +95,6 @@ namespace NetChat2.Converters
         {
             if (e.HorizontalChange != 0) return;
             LastVisibleIndex = GetLastVisibleElementIndex();
-            
         }
 
         private void GoToIndex(int index)
@@ -144,12 +138,11 @@ namespace NetChat2.Converters
             set
             {
                 _lastVisibleIndex = value;
-                if(NewMessagesCount > 0)
+                if (NewMessagesCount > 0)
                 {
                     int firstNewMessageIndex = AssociatedObject.Items.Count - NewMessagesCount;
                     int readedNewMessages = _lastVisibleIndex - firstNewMessageIndex + 1;
-                    
-                    if(readedNewMessages > 0)
+                    if (readedNewMessages > 0)
                     {
                         NewMessagesCount -= readedNewMessages;
                         for (int i = firstNewMessageIndex; i <= _lastVisibleIndex; i++)

@@ -14,7 +14,8 @@
         Background="Green"
         Title="Netchat 2.0" Height="450" Width="800"
         Style="{StaticResource CustomWindowStyle}"
-        >
+        MinWidth="400">
+    
     <i:Interaction.Triggers>
         <i:EventTrigger>
             <i:InvokeCommandAction Command="{Binding ConnectCommand}"/>
@@ -22,15 +23,13 @@
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding LogoutCommand}"/>
         </i:EventTrigger>
-        <i:EventTrigger>
-            <i:InvokeCommandAction Command="{Binding ConnectCommand}"/>
-        </i:EventTrigger>
     </i:Interaction.Triggers>
 
     <Window.Resources>
 
         <convrt:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
-        
+        <convrt:BindingProxy x:Key="proxy" Data="{Binding}"/>
+
         <Style x:Key="SendButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -68,31 +67,64 @@
             </Setter>
         </Style>
 
+        <Color A="100" R="64" G="64" B="64" x:Key="ReadedMessageGridBackground"/>
+        <Color A="255" R="128" G="128" B="128" x:Key="ChatBackground"/>
+        <SolidColorBrush x:Key="MessageOriginNative_Background" Color="Orange" Opacity="0.4"/>
+        <SolidColorBrush x:Key="MessageOriginNative_BorderBrush" Color="DarkOrange" Opacity="0.7"/>
+        <SolidColorBrush x:Key="MessageNotOriginNative_Background" Color="LightGray" Opacity="0.4"/>
+        <SolidColorBrush x:Key="MessageNotOriginNative_BorderBrush" Color="DarkGray" Opacity="0.4"/>
+
         <DataTemplate x:Key="MessagesDataTemplate">
-            <Border Name="MessageBorder" MinHeight="40" MinWidth="280" BorderThickness="1" Background="Orange" 
-                    Margin="10,0,60,10" BorderBrush="#BCAAA4" CornerRadius="4" SnapsToDevicePixels="True"
-                    HorizontalAlignment="Left">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition Height="15"/>
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock Grid.Row="0" Margin="7,5,7,0" 
+            <Grid x:Name="MessageBackGroundGrid" HorizontalAlignment="Stretch" IsHitTestVisible="True" Background="Transparent"
+                  MaxWidth="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualWidth}">
+                
+                <Border Name="MessageBorder"
+                        MinHeight="40" MinWidth="280" BorderThickness="1" 
+                        Background="{StaticResource MessageNotOriginNative_Background}" 
+                        BorderBrush="{StaticResource MessageNotOriginNative_BorderBrush}"
+                        Margin="10 5 60 5" CornerRadius="4" SnapsToDevicePixels="True"
+                        HorizontalAlignment="Left">
+                    <Border.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Копировать текст" Command="{Binding Data.CopyMessageCommand, Source={StaticResource proxy}}" 
+                                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
+                        </ContextMenu>
+                    </Border.ContextMenu>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="15"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock x:Name="MessageUser" Grid.Row="0" Margin="7,5,7,0"
                                VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                                Text="{Binding Username}"/>
 
-                    <TextBlock x:Name="MessageTxtBlock" Grid.Row="1" Margin="7,5,7,0" TextWrapping="Wrap" 
+                        <TextBlock x:Name="MessageTxtBlock" Grid.Row="1" Margin="7,5,7,0" TextWrapping="Wrap" 
                                VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                               Text="{Binding Text}"/>
-                    
-                    <TextBlock Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                               Text="{Binding Text}"
+                                   />
+
+                        <TextBlock Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Stretch"
                                Margin="0,0,5,0" FontSize="10" Opacity="0.8"
-                               Text="{Binding DateTime, StringFormat={}{0:t}}"/>
-                </Grid>
-            </Border>
+                               Text="{Binding DateTime, StringFormat=HH:mm}"/>
+                    </Grid>
+                </Border>
+
+
+            </Grid>
             <DataTemplate.Triggers>
+
+                <DataTrigger Binding="{Binding IsOriginNative}" Value="True">
+                    <Setter TargetName="MessageBorder" Property="HorizontalAlignment" Value="Right"/>
+                    <Setter TargetName="MessageBorder" Property="Margin" Value="60,5,10,5"/>
+                    <Setter TargetName="MessageBorder" Property="Background" Value="{StaticResource MessageOriginNative_Background}"/>
+                    <Setter TargetName="MessageBorder" Property="BorderBrush" Value="{StaticResource MessageOriginNative_BorderBrush}"/>
+                    <Setter TargetName="MessageUser" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+
                 <DataTrigger Binding="{Binding Text}" Value="{x:Null}">
                     <Setter TargetName="MessageTxtBlock" Property="Visibility" Value="Collapsed"/>
                     <Setter TargetName="MessageBorder" Property="MaxWidth" Value="320"/>
@@ -103,11 +135,13 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <ColorAnimation  
-                                    To="#EFEBE9" 
-                                    Storyboard.TargetName="MessageBorder"
-                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" 
-                                    
-                                    Duration="0:0:2"/>
+                                    Storyboard.TargetName="MessageBackGroundGrid"
+                                    Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                                    From="{StaticResource ChatBackground}"
+                                    To="{StaticResource ReadedMessageGridBackground}"
+                                    AutoReverse="True"
+                                    Duration="0:0:1">
+                                </ColorAnimation>
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.EnterActions>
@@ -154,30 +188,38 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
     </Window.Resources>
-    
-    
-    <Grid Background="Gray">
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="325*"/>
+            <ColumnDefinition Width="457*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <SolidColorBrush Color="{StaticResource ChatBackground}"/>
+        </Grid.Background>
+
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Button Style="{StaticResource IndicatorButStyle}" Command="{Binding LogoutCommand}" />
-        
+        <Button Style="{StaticResource IndicatorButStyle}" Command="{Binding LogoutCommand}" Margin="0 -16 70 0" Grid.Column="1" IsHitTestVisible="False" />
+
         <!--Messages-->
-        <ItemsControl x:Name="MessagesItemsCtrl" Grid.Column="1" Margin="0,5,0,0" 
+        <ItemsControl x:Name="MessagesItemsCtrl" Margin="0,5,0,0" 
                       ItemsSource="{Binding Messages}" 
                       ItemTemplate="{DynamicResource MessagesDataTemplate}"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                      ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
             <i:Interaction.Behaviors>
                 <convrt:BringNewItemIntoViewBehavior/>
             </i:Interaction.Behaviors>
             <ItemsControl.Template>
                 <ControlTemplate TargetType="ItemsControl">
                     <Grid>
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" >
                             <ItemsPresenter/>
                         </ScrollViewer>
                         <Border Background="Gray" Opacity="0.8" Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -192,13 +234,13 @@
         </ItemsControl>
 
         <Border Grid.Row="1" SnapsToDevicePixels="True"
-                BorderBrush="{DynamicResource MaterialDesignDivider}">
+                BorderBrush="{DynamicResource MaterialDesignDivider}" Grid.ColumnSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!--Message-->
                 <Border Margin="10,10,0,10" MaxHeight="80"
                         BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignDivider}">
@@ -211,7 +253,7 @@
                         </TextBox.InputBindings>
                     </TextBox>
                 </Border>
-                
+
                 <!--Send-->
                 <Button x:Name="SendButton" Grid.Column="1" Margin="10"
                         Style="{DynamicResource SendButtonStyle}"

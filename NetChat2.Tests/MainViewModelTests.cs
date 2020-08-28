@@ -27,6 +27,12 @@ namespace NetChat2.Tests
                 viewmodel = scope.Resolve<MainViewModel>();
         }
 
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+
+        }
+
         [Test]
         public void ResolvedNotNull()
         {
@@ -47,7 +53,7 @@ namespace NetChat2.Tests
         {
             await viewmodel.ConnectCommand.ExecuteAsync(null);
 
-            await viewmodel.LogoutCommand.ExecuteAsync(null);
+            viewmodel.LogoutCommand.Execute(null);
 
             Assert.IsFalse(viewmodel.IsConnected);
             Assert.IsTrue(viewmodel.ConnectCommand.CanExecute(null));
@@ -63,6 +69,8 @@ namespace NetChat2.Tests
 
             ManualResetEvent resetEvent = new ManualResetEvent(false);
             resetEvent.WaitOne(50, false);
+            foreach(var mes in viewmodel.Messages)
+                Console.WriteLine(mes.Text);
             Assert.AreEqual(2, viewmodel.Messages.Count);
             Assert.AreEqual("message", viewmodel.Messages[1].Text);
         }

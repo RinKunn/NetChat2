@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using NUnit.Framework;
 
@@ -67,7 +68,7 @@ namespace NetChat2.Connector.Tests
                     statsUpdatedEvent.Set();
                 };
 
-                File.AppendAllText(path, (new NetChatMessage(username, inputLine)).ToString() + "\n");
+                File.AppendAllText(path, (new NetChatMessage(username, inputLine)).ToString() + "\n", Encoding.GetEncoding(1251));
                 statsUpdatedEvent.WaitOne(50, false);
             }
 

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Autofac;
-using NetChat2.Services;
 using NetChat2.Connector;
+using NetChat2.Models;
+using NetChat2.Services;
 using NetChat2.ViewModel;
-using System.IO;
 
 namespace NetChat2
 {
@@ -18,9 +15,13 @@ namespace NetChat2
             builder.RegisterType<ChatService>().As<IChatService>().SingleInstance();
             builder.RegisterType<FileNetchatHub>()
                 .As<INetchatHub>()
-                .WithParameter(new TypedParameter(typeof(string), @"./netchattt2.txt"))
+                .WithParameter(new TypedParameter(typeof(string), System.Configuration.ConfigurationManager.AppSettings["MessagesPath"]))
                 .InstancePerLifetimeScope();
             builder.RegisterType<MainViewModel>();
+
+            var processesCount = Process.GetProcessesByName("NetChat2").Length;
+            var user = new User(Environment.UserName.ToUpper() + (processesCount > 1 ? $"_{processesCount}" : string.Empty));
+            builder.RegisterInstance<User>(user);
             return builder;
         }
     }

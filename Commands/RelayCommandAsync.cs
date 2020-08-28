@@ -14,82 +14,82 @@ namespace NetChat2.Commands
         Task ExecuteAsync(object parameter);
     }
 
-    public abstract class AsyncCommandBase : IAsyncCommand
-    {
-        public abstract bool CanExecute(object parameter);
-        public abstract Task ExecuteAsync(object parameter);
-        public async void Execute(object parameter)
-        {
-            await ExecuteAsync(parameter);
-        }
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        protected void RaiseCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
-        }
-    }
+    //public abstract class AsyncCommandBase : IAsyncCommand
+    //{
+    //    public abstract bool CanExecute(object parameter);
+    //    public abstract Task ExecuteAsync(object parameter);
+    //    public async void Execute(object parameter)
+    //    {
+    //        await ExecuteAsync(parameter);
+    //    }
+    //    public event EventHandler CanExecuteChanged
+    //    {
+    //        add { CommandManager.RequerySuggested += value; }
+    //        remove { CommandManager.RequerySuggested -= value; }
+    //    }
+    //    protected void RaiseCanExecuteChanged()
+    //    {
+    //        CommandManager.InvalidateRequerySuggested();
+    //    }
+    //}
 
-    public class AsyncCommand : AsyncCommandBase, INotifyPropertyChanged
-    {
-        private readonly Func<Task> _command;
-        private readonly Predicate<object> _canExecute;
-        private NotifyTaskCompletion _execution;
+    //public class AsyncCommand : AsyncCommandBase, INotifyPropertyChanged
+    //{
+    //    private readonly Func<Task> _command;
+    //    private readonly Predicate<object> _canExecute;
+    //    private NotifyTaskCompletion _execution;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    //    public event PropertyChangedEventHandler PropertyChanged;
 
-        public AsyncCommand(Func<Task> command) : this(command, null) { }
-        public AsyncCommand(Func<Task> command, Predicate<object> canExecute)
-        {
-            _command = command;
-            _canExecute = canExecute;
-        }
+    //    public AsyncCommand(Func<Task> command) : this(command, null) { }
+    //    public AsyncCommand(Func<Task> command, Predicate<object> canExecute)
+    //    {
+    //        _command = command;
+    //        _canExecute = canExecute;
+    //    }
 
-        public override bool CanExecute(object parameter)
-        {
-            if (Execution == null || !Execution.IsNotCompleted && _canExecute == null) return true;
-            return (!Execution.IsNotCompleted && _canExecute(parameter));
-        }
-        public override Task ExecuteAsync(object parameter)
-        {
-            Execution = new NotifyTaskCompletion(_command());
-            return Execution.TaskCompletion;
-        }
-        // Raises PropertyChanged
-        public NotifyTaskCompletion Execution { get; private set; }
-    }
+    //    public override bool CanExecute(object parameter)
+    //    {
+    //        if (Execution == null || !Execution.IsNotCompleted && _canExecute == null) return true;
+    //        return (!Execution.IsNotCompleted && _canExecute(parameter));
+    //    }
+    //    public override Task ExecuteAsync(object parameter)
+    //    {
+    //        Execution = new NotifyTaskCompletion(_command());
+    //        return Execution.TaskCompletion;
+    //    }
+    //    // Raises PropertyChanged
+    //    public NotifyTaskCompletion Execution { get; private set; }
+    //}
 
-    public class AsyncCommand<TResult> : AsyncCommandBase, INotifyPropertyChanged
-    {
-        private readonly Func<Task<TResult>> _command;
-        private readonly Predicate<object> _canExecute;
-        private NotifyTaskCompletion<TResult> _execution;
+    //public class AsyncCommand<TResult> : AsyncCommandBase, INotifyPropertyChanged
+    //{
+    //    private readonly Func<Task<TResult>> _command;
+    //    private readonly Predicate<object> _canExecute;
+    //    private NotifyTaskCompletion<TResult> _execution;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    //    public event PropertyChangedEventHandler PropertyChanged;
 
-        public AsyncCommand(Func<Task<TResult>> command) : this (command, null) { }
-        public AsyncCommand(Func<Task<TResult>> command, Predicate<object> canExecute)
-        {
-            _command = command;
-            _canExecute = canExecute;
-        }
+    //    public AsyncCommand(Func<Task<TResult>> command) : this (command, null) { }
+    //    public AsyncCommand(Func<Task<TResult>> command, Predicate<object> canExecute)
+    //    {
+    //        _command = command;
+    //        _canExecute = canExecute;
+    //    }
 
-        public override bool CanExecute(object parameter)
-        {
-            if (!Execution.IsNotCompleted && _canExecute == null) return true;
-            return (!Execution.IsNotCompleted && _canExecute(parameter));
-        }
-        public override Task ExecuteAsync(object parameter)
-        {
-            Execution = new NotifyTaskCompletion<TResult>(_command());
-            return Execution.TaskCompletion;
-        }
-        // Raises PropertyChanged
-        public NotifyTaskCompletion<TResult> Execution { get; private set; }
-    }
+    //    public override bool CanExecute(object parameter)
+    //    {
+    //        if (!Execution.IsNotCompleted && _canExecute == null) return true;
+    //        return (!Execution.IsNotCompleted && _canExecute(parameter));
+    //    }
+    //    public override Task ExecuteAsync(object parameter)
+    //    {
+    //        Execution = new NotifyTaskCompletion<TResult>(_command());
+    //        return Execution.TaskCompletion;
+    //    }
+    //    // Raises PropertyChanged
+    //    public NotifyTaskCompletion<TResult> Execution { get; private set; }
+    //}
 
     
 
@@ -106,7 +106,7 @@ namespace NetChat2.Commands
 
 
 
-    public class RelayCommandAsync : ICommand
+    public class RelayCommandAsync : IAsyncCommand
     {
         private readonly Action<Exception> _onException;
         private readonly Func<Task> _execute;
@@ -165,13 +165,18 @@ namespace NetChat2.Commands
             IsExecuting = true;
             try 
             {
-                await _execute();
+                await ExecuteAsync(parameter);
             }
             catch (Exception ex)
             {
                 _onException?.Invoke(ex);
             }
             IsExecuting = false;
+        }
+
+        public async Task ExecuteAsync(object parameter)
+        {
+            await _execute();
         }
     }
 }

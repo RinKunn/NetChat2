@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using Autofac;
-using Autofac.Extras.CommonServiceLocator;
-using CommonServiceLocator;
-using GalaSoft.MvvmLight.Threading;
 using NetChat2.ViewModel;
+using NLog;
 
 namespace NetChat2
 {
@@ -18,10 +10,12 @@ namespace NetChat2
     /// </summary>
     public partial class App : Application
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private IContainer _container;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            logger.Info(new string('-', 20));
             base.OnStartup(e);
             InitializeInternal();
         }
@@ -29,20 +23,24 @@ namespace NetChat2
         private void InitializeInternal()
         {
             _container = BuildAppContainer();
-            //ServiceLocator.SetLocatorProvider(() => _container.Resolve<IServiceLocator>());
-
             MainWindow window = new MainWindow();
-            window.DataContext = _container.Resolve<MainViewModel>();
+            using(var scope = _container.BeginLifetimeScope())
+            {
+                window.DataContext = _container.Resolve<MainViewModel>();
+            }
             window.Show();
         }
 
         private IContainer BuildAppContainer()
         {
             var builder = new ContainerBuilder();
-            //builder.RegisterInstance(_container);
-            //builder.RegisterType<IServiceLocator>().As<AutofacServiceLocator>().SingleInstance();
             builder.RegisterAppServices();
             return builder.Build();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            LogManager.Shutdown();
         }
     }
 }

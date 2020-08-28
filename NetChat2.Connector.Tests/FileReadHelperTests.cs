@@ -76,15 +76,15 @@ namespace NetChat2.Connector.Tests
             Assert.Greater(dumb.ElapsedTime, test.ElapsedTime);
         }
 
-        [Test]
-        public void ReadAllLines_BigFile()
-        {
-            var lines = FileReadHelper.ReadAllLines(filePathBigSize, encoding);
+        //[Test]
+        //public void ReadAllLines_BigFile()
+        //{
+        //    var lines = FileReadHelper.ReadAllLines(filePathBigSize, encoding);
 
-            Assert.NotNull(lines);
-            Assert.AreEqual(BIGFILE_SIZE, lines.Length);
-            Assert.AreEqual($"testline-{(BIGFILE_SIZE - 1)}", lines[lines.Length - 1]);
-        }
+        //    Assert.NotNull(lines);
+        //    Assert.AreEqual(BIGFILE_SIZE, lines.Length);
+        //    Assert.AreEqual($"testline-{(BIGFILE_SIZE - 1)}", lines[lines.Length - 1]);
+        //}
 
         [Test]
         public async Task ReadAllLinesAsync_BigFile()

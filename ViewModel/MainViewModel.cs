@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -13,6 +14,7 @@ namespace NetChat2.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly IChatService _chatService;
 
         private ObservableCollection<Message> _messages;
@@ -53,10 +55,9 @@ namespace NetChat2.ViewModel
         
 
         //Logon
-        private ICommand _connectCommand;
-        public ICommand ConnectCommand => _connectCommand ??
+        private IAsyncCommand _connectCommand;
+        public IAsyncCommand ConnectCommand => _connectCommand ??
             (_connectCommand = new RelayCommandAsync(Connect, (o) => CanLogon()));
-
         private async Task Connect()
         {
             await Task.Delay(1000);
@@ -72,18 +73,18 @@ namespace NetChat2.ViewModel
         private ICommand _logoutCommand;
         public ICommand LogoutCommand => _logoutCommand ?? 
             (_logoutCommand = new RelayCommand(Logout));
-
         private void Logout()
         {
-            _chatService.Dispose();
             IsConnected = false;
+            _chatService.Dispose();
+            Console.WriteLine();
         }
 
-        //Send message
-        private ICommand _sendMessageCommand;
-        public ICommand SendMessageCommand => _sendMessageCommand ??
-            (_sendMessageCommand = new RelayCommandAsync(SendTextMessage, (o) => CanSendTextMessage()));
 
+        //Send message
+        private IAsyncCommand _sendMessageCommand;
+        public IAsyncCommand SendMessageCommand => _sendMessageCommand ??
+            (_sendMessageCommand = new RelayCommandAsync(SendTextMessage, (o) => CanSendTextMessage()));
         private async Task SendTextMessage()
         {
             await _chatService.SendMessageAsync(_textMessage);
@@ -93,6 +94,15 @@ namespace NetChat2.ViewModel
         {
             return (!string.IsNullOrEmpty(TextMessage) && IsConnected);
         }
-        
+
+
+        // Copy message
+        private ICommand _copyMessageCommand;
+        public ICommand CopyMessageCommand => _copyMessageCommand ??
+            (_copyMessageCommand = new RelayCommand<Message>(CopyMessage));
+        private void CopyMessage(Message message)
+        {
+            Clipboard.SetText(message.Text);
+        }
     }
 }

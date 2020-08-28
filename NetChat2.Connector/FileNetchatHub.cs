@@ -38,7 +38,6 @@ namespace NetChat2.Connector
             OnMessageReceived?.Invoke(new NetChatMessage(newLine));
         }
 
-
         public void SendMessage(NetChatMessage message)
         {
             File.AppendAllText(_path, message.ToString() + '\n', encoding);
@@ -58,9 +57,10 @@ namespace NetChat2.Connector
 
         public void Dispose()
         {
+            Console.WriteLine($"Closing...");
             _fileWatcher.EnableRaisingEvents = false;
             _fileWatcher.Changed -= OnFileChangedHandler;
-            _fileWatcher.Dispose();
+            //_fileWatcher.Dispose();
         }
 
         public async Task<IEnumerable<NetChatMessage>> LoadMessages(CancellationToken token = default, int count = 0)
