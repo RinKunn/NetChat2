@@ -63,7 +63,7 @@ namespace NetChat2.Tests
         public async Task SendMessage_MessageAddedToList()
         {
             await viewmodel.ConnectCommand.ExecuteAsync(null);
-            viewmodel.TextMessage = "message";
+            //viewmodel.TextMessage = "message";
 
             viewmodel.SendMessageCommand.Execute(null);
 

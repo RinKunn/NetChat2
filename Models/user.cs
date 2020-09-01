@@ -15,14 +15,13 @@ namespace NetChat2.Models
         public UserStatus Status { get; set; }
         public DateTime StatusChangedDateTime { get; set; }
 
-        public User(string name)
-        {
-            EnvName = name;
-        }
+        
+
     }
 
     public enum UserStatus
     {
-        Online, Offline
+        Offline = 0,
+        Online = 1
     }
 }

@@ -11,7 +11,7 @@
         <ResourceDictionary>
             <vm:ViewModelLocator x:Key="ViewModelLocator"/>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="./Styles/WindowStyle.xaml"/>
+                <ResourceDictionary Source="./Source/WindowStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
   </Application.Resources>

@@ -1279,7 +1279,7 @@
         </xs:attribute>
         <xs:attribute name="maxMessageLength" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Message length limit to write to the Event Log.</xs:documentation>
+            <xs:documentation>TextMessageViewModel length limit to write to the Event Log.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="source" type="SimpleLayoutAttribute">

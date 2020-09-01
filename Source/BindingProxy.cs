@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace NetChat2.Converters
+namespace NetChat2.Source
 {
     public class BindingProxy : Freezable
     {

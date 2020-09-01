@@ -47,8 +47,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileReadHelperTests.cs" />
-    <Compile Include="FileNetchatHubTests.cs" />
+    <Compile Include="FileHelperTests.cs" />
+    <Compile Include="MessageFileNotifierTests.cs" />
     <Compile Include="MessageBuildTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

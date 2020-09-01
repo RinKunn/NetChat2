@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetChat2.Models
 {
-    public class SendingMessage
+    public class TextMessage
     {
         public DateTime CreatedDateTime { get; set; }
         public User Author { get; set; }

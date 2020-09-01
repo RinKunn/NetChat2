@@ -8,15 +8,16 @@ using NUnit.Framework;
 namespace NetChat2.Connector.Tests
 {
     [TestFixture]
-    class FileNetchatHubTests
+    class MessageFileNotifierTests
     {
         private string path;
+        private Encoding encoding = Encoding.GetEncoding(1251);
 
         [SetUp]
         public void Init()
         {
             string dir = Path.Combine(Directory.GetCurrentDirectory(), "NetChatTests");
-            path = Path.Combine(dir, "fnchh_test.txt");
+            path = Path.Combine(dir, "mfnt.txt");
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
         }
 
@@ -35,7 +36,7 @@ namespace NetChat2.Connector.Tests
             List<NetChatMessage> receivedMessages = new List<NetChatMessage>();
             ManualResetEvent statsUpdatedEvent = new ManualResetEvent(false);
 
-            using(var watcher = new FileNetchatHub(path))
+            using(var watcher = new MessageFileNotifier(path, encoding))
             {
                 watcher.OnMessageReceived += (mess) =>
                 {
@@ -43,7 +44,9 @@ namespace NetChat2.Connector.Tests
                     statsUpdatedEvent.Set();
                 };
 
-                File.AppendAllText(path, (new NetChatMessage(username, inputLine)).ToString() + "\n");
+                var sender = new MessageFileSender(path, encoding);
+                sender.SendMessage(new NetChatMessage(username, inputLine));
+
                 statsUpdatedEvent.WaitOne(50, false);
             }
 
@@ -60,7 +63,7 @@ namespace NetChat2.Connector.Tests
             List<NetChatMessage> receivedMessages = new List<NetChatMessage>();
             ManualResetEvent statsUpdatedEvent = new ManualResetEvent(false);
 
-            using (var watcher = new FileNetchatHub(path))
+            using (var watcher = new MessageFileNotifier(path, encoding))
             {
                 watcher.OnMessageReceived += (mess) =>
                 {
@@ -68,7 +71,9 @@ namespace NetChat2.Connector.Tests
                     statsUpdatedEvent.Set();
                 };
 
-                File.AppendAllText(path, (new NetChatMessage(username, inputLine)).ToString() + "\n", Encoding.GetEncoding(1251));
+                var sender = new MessageFileSender(path, encoding);
+                sender.SendMessage(new NetChatMessage(username, inputLine));
+
                 statsUpdatedEvent.WaitOne(50, false);
             }
 

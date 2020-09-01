@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace NetChat2.Connector
 {
-    public static class FileReadHelper
+    public static class FileHelper
     {
         /// <summary>
         /// Read last line of file

@@ -9,7 +9,7 @@ using System.Text;
 namespace NetChat2.Connector.Tests
 {
     [TestFixture]
-    public class FileReadHelperTests
+    public class FileHelperTests
     {
         private string filePath;
         private string filePathBigSize;
@@ -21,7 +21,7 @@ namespace NetChat2.Connector.Tests
         {
             File.AppendAllText(filePath, "line1\n");
 
-            string readedline = FileReadHelper.ReadLastLine(filePath, encoding);
+            string readedline = FileHelper.ReadLastLine(filePath, encoding);
 
             Assert.NotNull(readedline);
             Assert.AreEqual("line1", readedline);
@@ -32,7 +32,7 @@ namespace NetChat2.Connector.Tests
         {
             File.AppendAllText(filePath, "line1");
 
-            string readedline = FileReadHelper.ReadLastLine(filePath, encoding);
+            string readedline = FileHelper.ReadLastLine(filePath, encoding);
 
             Assert.NotNull(readedline);
             Assert.AreEqual("line1", readedline);
@@ -44,7 +44,7 @@ namespace NetChat2.Connector.Tests
             File.AppendAllText(filePath, "line1\n");
             File.AppendAllText(filePath, "line2\n");
 
-            string readedline = FileReadHelper.ReadLastLine(filePath, encoding);
+            string readedline = FileHelper.ReadLastLine(filePath, encoding);
 
             Assert.NotNull(readedline);
             Assert.AreEqual("line2", readedline);
@@ -56,7 +56,7 @@ namespace NetChat2.Connector.Tests
             File.AppendAllText(filePath, "line1\n");
             File.AppendAllText(filePath, "line2");
 
-            string readedline = FileReadHelper.ReadLastLine(filePath, encoding);
+            string readedline = FileHelper.ReadLastLine(filePath, encoding);
 
             Assert.NotNull(readedline);
             Assert.AreEqual("line2", readedline);
@@ -89,7 +89,7 @@ namespace NetChat2.Connector.Tests
         [Test]
         public async Task ReadAllLinesAsync_BigFile()
         {
-            var lines = await FileReadHelper.ReadAllLinesAsync(filePathBigSize, encoding);
+            var lines = await FileHelper.ReadAllLinesAsync(filePathBigSize, encoding);
 
             Assert.NotNull(lines);
             Assert.AreEqual(BIGFILE_SIZE, lines.Length);
@@ -99,7 +99,7 @@ namespace NetChat2.Connector.Tests
         [Test]
         public void ReadAllLines_N50BigFile()
         {
-            var lines = FileReadHelper.ReadAllLines(filePathBigSize, encoding, 50);
+            var lines = FileHelper.ReadAllLines(filePathBigSize, encoding, 50);
 
             Assert.NotNull(lines);
             Assert.AreEqual(50, lines.Length);
@@ -110,7 +110,7 @@ namespace NetChat2.Connector.Tests
         [Test]
         public async Task ReadAllLinesAsync_N50BigFile()
         {
-            var lines = await FileReadHelper.ReadAllLinesAsync(filePathBigSize, encoding, 50);
+            var lines = await FileHelper.ReadAllLinesAsync(filePathBigSize, encoding, 50);
 
             Assert.NotNull(lines);
             Assert.AreEqual(50, lines.Length);
@@ -122,7 +122,7 @@ namespace NetChat2.Connector.Tests
         {
             CancellationTokenSource s = new CancellationTokenSource();
             s.CancelAfter(2);
-            Assert.ThrowsAsync<OperationCanceledException>(async () => await FileReadHelper.ReadAllLinesAsync(filePathBigSize, encoding, 50, s.Token));
+            Assert.ThrowsAsync<OperationCanceledException>(async () => await FileHelper.ReadAllLinesAsync(filePathBigSize, encoding, 50, s.Token));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace NetChat2.Connector.Tests
         {
             GenerateFile(filePath, 10);
             
-            var lines = FileReadHelper.ReadAllLines(filePath, encoding, 50);
+            var lines = FileHelper.ReadAllLines(filePath, encoding, 50);
 
             Assert.NotNull(lines);
             Assert.AreEqual(10, lines.Length);
@@ -143,7 +143,7 @@ namespace NetChat2.Connector.Tests
         {
             GenerateFile(filePath, 10);
             
-            var lines = await FileReadHelper.ReadAllLinesAsync(filePath, encoding, 50);
+            var lines = await FileHelper.ReadAllLinesAsync(filePath, encoding, 50);
 
             Assert.NotNull(lines);
             Assert.AreEqual(10, lines.Length);
@@ -189,7 +189,7 @@ namespace NetChat2.Connector.Tests
         }
         private string GetLastLine_TestMethod(string path)
         {
-            return FileReadHelper.ReadLastLine(path, encoding);
+            return FileHelper.ReadLastLine(path, encoding);
         }
         private string GetLastLine_DumbMethod(string path)
         {

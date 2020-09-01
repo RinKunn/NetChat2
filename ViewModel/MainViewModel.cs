@@ -15,17 +15,17 @@ namespace NetChat2.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private readonly IChatService _chatService;
+        //private readonly IChatService _chatService;
 
-        private ObservableCollection<Message> _messages;
-        public ObservableCollection<Message> Messages
+        private ObservableCollection<TextMessageViewModel> _messages;
+        public ObservableCollection<TextMessageViewModel> Messages
         {
             get => _messages;
             private set => Set(ref _messages, value);
         }
 
         private string _textMessage;
-        public string TextMessage
+        public string TextMessageViewModel
         {
             get => _textMessage;
             set => Set(ref _textMessage, value);
@@ -38,13 +38,13 @@ namespace NetChat2.ViewModel
             private set => Set(ref _isConnected, value);
         }
 
-        public MainViewModel(IChatService chatService)
-        {
-            _chatService = chatService;
-            _chatService.NewMessageReceived += ChatService_NewMessageReceived;
-        }
+        //public MainViewModel(IChatService chatService)
+        //{
+        //    _chatService = chatService;
+        //    _chatService.NewMessageReceived += ChatService_NewMessageReceived;
+        //}
 
-        private void ChatService_NewMessageReceived(Message message)
+        private void ChatService_NewMessageReceived(TextMessageViewModel message)
         {
             try
             {
@@ -60,11 +60,11 @@ namespace NetChat2.ViewModel
             (_connectCommand = new RelayCommandAsync(Connect, (o) => CanLogon()));
         private async Task Connect()
         {
-            await Task.Delay(1000);
-            var res = await _chatService.LoadAllMessages(50);
-            Messages = new ObservableCollection<Message>(res.ToList());
-            await _chatService.ConnectAsync();
-            IsConnected = true;   
+            //await Task.Delay(1000);
+            //var res = await _chatService.LoadAllMessages(50);
+            //Messages = new ObservableCollection<TextMessageViewModel>(res.ToList());
+            //await _chatService.ConnectAsync();
+            //IsConnected = true;   
         }
         private bool CanLogon() => !IsConnected;
 
@@ -76,7 +76,7 @@ namespace NetChat2.ViewModel
         private void Logout()
         {
             IsConnected = false;
-            _chatService.Dispose();
+            //_chatService.Dispose();
             Console.WriteLine();
         }
 
@@ -87,20 +87,20 @@ namespace NetChat2.ViewModel
             (_sendMessageCommand = new RelayCommandAsync(SendTextMessage, (o) => CanSendTextMessage()));
         private async Task SendTextMessage()
         {
-            await _chatService.SendMessageAsync(_textMessage);
-            TextMessage = string.Empty;
+            //await _chatService.SendMessageAsync(_textMessage);
+            TextMessageViewModel = string.Empty;
         }
         private bool CanSendTextMessage()
         {
-            return (!string.IsNullOrEmpty(TextMessage) && IsConnected);
+            return (!string.IsNullOrEmpty(TextMessageViewModel) && IsConnected);
         }
 
 
         // Copy message
         private ICommand _copyMessageCommand;
         public ICommand CopyMessageCommand => _copyMessageCommand ??
-            (_copyMessageCommand = new RelayCommand<Message>(CopyMessage));
-        private void CopyMessage(Message message)
+            (_copyMessageCommand = new RelayCommand<TextMessageViewModel>(CopyMessage));
+        private void CopyMessage(TextMessageViewModel message)
         {
             Clipboard.SetText(message.Text);
         }

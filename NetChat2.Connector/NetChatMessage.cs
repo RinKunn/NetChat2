@@ -23,6 +23,13 @@ namespace NetChat2.Connector
             _message = message.Replace("\n", " ").Replace("  ", " ");
         }
 
+        public NetChatMessage(string username, string message, DateTime dateTime)
+        {
+            _datetime = dateTime;
+            _username = username ?? throw new ArgumentNullException(nameof(username));
+            _message = message.Replace("\n", " ").Replace("  ", " ");
+        }
+
         public NetChatMessage(string line)
         {
             if (string.IsNullOrEmpty(line))

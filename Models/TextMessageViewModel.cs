@@ -13,7 +13,7 @@ namespace NetChat2.Models
         void Read();
     }
 
-    public class Message : ObservableObject, IReadable
+    public class TextMessageViewModel : ObservableObject, IReadable
     {
         private DateTime _dateTime;
         private User _user;
@@ -28,7 +28,7 @@ namespace NetChat2.Models
         public bool IsOriginNative => _isOriginNative;
 
 
-        public Message(DateTime dateTime, User user, string text, bool isOriginNative = false, bool isReaded = false)
+        public TextMessageViewModel(DateTime dateTime, User user, string text, bool isOriginNative = false, bool isReaded = false)
         {
             _dateTime = dateTime;
             _user = user;

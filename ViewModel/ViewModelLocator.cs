@@ -31,4 +31,12 @@ namespace NetChat2.ViewModel
 
         public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();
     }
+
+    public static class LocatorServices
+    {
+        public static TService GetService<TService>(this IServiceLocator locator)
+        {
+            return (TService)locator.GetService(typeof(TService));
+        }
+    }
 }

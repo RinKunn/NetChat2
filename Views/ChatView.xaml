@@ -1,47 +1,32 @@
 ﻿<UserControl x:Class="NetChat2.Views.ChatView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NetChat2.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converter="clr-namespace:NetChat2.Converters"
+             xmlns:source="clr-namespace:NetChat2.Source"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
-    <Grid>
-        <Grid.Background>
-            <SolidColorBrush Color="{StaticResource ChatBackground}"/>
-        </Grid.Background>
 
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Button Style="{StaticResource IndicatorButStyle}" Command="{Binding LogoutCommand}" Margin="0 -16 70 0" Grid.Column="1" IsHitTestVisible="False" />
-
+        <!--<Button Style="{StaticResource IndicatorButStyle}" Command="{Binding LogoutCommand}" Margin="0 -16 70 0" Grid.Column="1" IsHitTestVisible="False" />-->
+        
         <!--Messages-->
-        <ItemsControl x:Name="MessagesItemsCtrl" Margin="0,5,0,0" 
+        <ItemsControl x:Name="MessagesItemsCtrl" Margin="0,5,0,0"
                       ItemsSource="{Binding Messages}" 
                       ItemTemplate="{DynamicResource MessagesDataTemplate}"
+                      Template="{DynamicResource ChatAreaTemplate}"
                       ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
             <i:Interaction.Behaviors>
-                <convrt:BringNewItemIntoViewBehavior/>
+                <source:BringNewItemIntoViewBehavior/>
             </i:Interaction.Behaviors>
-            <ItemsControl.Template>
-                <ControlTemplate TargetType="ItemsControl">
-                    <Grid>
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" >
-                            <ItemsPresenter/>
-                        </ScrollViewer>
-                        <Border Background="Gray" Opacity="0.8" Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="Loading..." VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="17"/>
-                        </Border>
-                        <Button Style="{StaticResource NewMessagesCount}" VerticalAlignment="Bottom" 
-                                HorizontalAlignment="Right" Background="Orange"
-                                Visibility="Collapsed"/>
-                    </Grid>
-                </ControlTemplate>
-            </ItemsControl.Template>
         </ItemsControl>
 
         <Border Grid.Row="1" SnapsToDevicePixels="True"
@@ -52,13 +37,13 @@
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
 
-                <!--Message-->
+                <!--TextMessageViewModel-->
                 <Border Margin="10,10,0,10" MaxHeight="80"
                         BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignDivider}">
                     <TextBox x:Name="MessageTxtBox" BorderBrush="Transparent"
                                  TextWrapping="Wrap" AcceptsReturn="True" CaretBrush="#7F000000"
                                  VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}">
+                                 Text="{Binding TextMessageViewModel, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.InputBindings>
                             <KeyBinding Key="Enter" Command="{Binding SendMessageCommand}"/>
                         </TextBox.InputBindings>
@@ -71,5 +56,195 @@
                         Command="{Binding SendMessageCommand}"/>
             </Grid>
         </Border>
+
+        <Grid.Background>
+            <SolidColorBrush Color="{StaticResource ChatBackground}"/>
+        </Grid.Background>
     </Grid>
+
+    
+    
+    
+    <UserControl.Resources>
+
+        <source:BindingProxy x:Key="proxy" Data="{Binding}"/>
+
+        <Color A="100" R="64" G="64" B="64" x:Key="ReadedMessageGridBackground"/>
+        <Color A="255" R="128" G="128" B="128" x:Key="ChatBackground"/>
+        <SolidColorBrush x:Key="MessageOriginNative_Background" Color="Orange" Opacity="0.4"/>
+        <SolidColorBrush x:Key="MessageOriginNative_BorderBrush" Color="DarkOrange" Opacity="0.7"/>
+        <SolidColorBrush x:Key="MessageNotOriginNative_Background" Color="LightGray" Opacity="0.4"/>
+        <SolidColorBrush x:Key="MessageNotOriginNative_BorderBrush" Color="DarkGray" Opacity="0.4"/>
+        
+        
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
+        
+        <ControlTemplate x:Key="ChatAreaTemplate" TargetType="{x:Type ItemsControl}">
+            <Grid>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                    <ItemsPresenter/>
+                </ScrollViewer>
+
+                <!--Loading indicator-->
+                <Border Background="Gray" 
+                        Opacity="0.8"
+                        Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock 
+                        Text="Loading..." 
+                        VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="17"/>
+                </Border>
+                
+                <!--New messages-->
+                <Button Style="{DynamicResource MessagesCountButton}" 
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right" 
+                        Background="Orange"
+                        Visibility="Collapsed"/>
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="MessagesCountButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="15"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Ellipse Fill="{TemplateBinding Background}" Width="40" Height="40"/>
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Polygon Fill="{TemplateBinding Background}" Points="0 0 34 0 18 20" 
+                                     HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                     Margin="0 0 0 -10"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SendButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid Background="#00000000">
+                            <materialDesign:PackIcon Name="SendIcon" Kind="Send" SnapsToDevicePixels="True"
+                                                     Foreground="{TemplateBinding Foreground}"
+                                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                     Margin="{TemplateBinding Padding}" Width="Auto" Height="Auto"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" TargetName="SendIcon" Value="{DynamicResource PrimaryHueMidBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="Foreground" TargetName="SendIcon" Value="{DynamicResource PrimaryHueMidBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.23"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="MessagesDataTemplate">
+
+            <Grid x:Name="MessageBackGroundGrid" 
+              HorizontalAlignment="Stretch" 
+              IsHitTestVisible="True" 
+              Background="Transparent"
+              MaxWidth="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualWidth}">
+
+                <Border Name="MessageBorder"
+                    MinHeight="40" MinWidth="280" 
+                    BorderThickness="1" 
+                    Background="{StaticResource MessageNotOriginNative_Background}" 
+                    BorderBrush="{StaticResource MessageNotOriginNative_BorderBrush}"
+                    Margin="10 5 60 5" CornerRadius="4" SnapsToDevicePixels="True"
+                    HorizontalAlignment="Left">
+
+                    <Border.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Копировать текст" 
+                                  Command="{Binding Data.CopyMessageCommand, Source={StaticResource proxy}}" 
+                                  CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
+                        </ContextMenu>
+                    </Border.ContextMenu>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="15"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock x:Name="MessageUser"
+                               Grid.Row="0" Margin="7,5,7,0"
+                               VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                               Text="{Binding Username}"/>
+
+                        <TextBlock x:Name="MessageTxtBlock"
+                               Grid.Row="1" Margin="7,5,7,0" 
+                               TextWrapping="Wrap" 
+                               VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                               Text="{Binding Text}"/>
+
+                        <TextBlock Grid.Row="2" 
+                               Margin="0,0,5,0" 
+                               FontSize="10" Opacity="0.8"
+                               VerticalAlignment="Stretch" HorizontalAlignment="Right"
+                               Text="{Binding DateTime, StringFormat=HH:mm}"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+            <DataTemplate.Triggers>
+
+                <DataTrigger Binding="{Binding IsOriginNative}" Value="True">
+                    <Setter TargetName="MessageBorder" Property="HorizontalAlignment" Value="Right"/>
+                    <Setter TargetName="MessageBorder" Property="Margin" Value="60,5,10,5"/>
+                    <Setter TargetName="MessageBorder" Property="Background" Value="{StaticResource MessageOriginNative_Background}"/>
+                    <Setter TargetName="MessageBorder" Property="BorderBrush" Value="{StaticResource MessageOriginNative_BorderBrush}"/>
+                    <Setter TargetName="MessageUser" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding Text}" Value="{x:Null}">
+                    <Setter TargetName="MessageTxtBlock" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="MessageBorder" Property="MaxWidth" Value="320"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding IsReaded}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation  
+                                    Storyboard.TargetName="MessageBackGroundGrid"
+                                    Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                                    From="{StaticResource ChatBackground}"
+                                    To="{StaticResource ReadedMessageGridBackground}"
+                                    AutoReverse="True"
+                                    Duration="0:0:1">
+                                </ColorAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        
+    </UserControl.Resources>
+
 </UserControl>

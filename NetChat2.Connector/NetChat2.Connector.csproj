@@ -41,9 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileReadHelper.cs" />
-    <Compile Include="FileNetchatHub.cs" />
-    <Compile Include="INetchatHub.cs" />
+    <Compile Include="FileHelper.cs" />
+    <Compile Include="MessageFileNotifier.cs" />
+    <Compile Include="IMessageFileNotifier.cs" />
+    <Compile Include="MessageFileLoader.cs" />
+    <Compile Include="MessageFileSender.cs" />
     <Compile Include="NetChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

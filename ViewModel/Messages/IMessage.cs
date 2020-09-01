@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetChat2.Models
+namespace NetChat2.ViewModel.Messages
 {
-    public class ChatModel
+    public interface IMessage
     {
-
     }
 }

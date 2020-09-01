@@ -7,7 +7,7 @@ using System.Collections;
 using System.Windows.Media;
 using NetChat2.Models;
 
-namespace NetChat2.Converters
+namespace NetChat2.Source
 {
     public static class Helper
     {
@@ -23,10 +23,10 @@ namespace NetChat2.Converters
             for (int i = 0; i < childrenCount; i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                
+
                 if (!(child is T childType))
                 {
-                    foundChild = FindChild<T>(child);
+                    foundChild = child.FindChild<T>();
                     if (foundChild != null) break;
                 }
                 else
@@ -44,13 +44,13 @@ namespace NetChat2.Converters
         private INotifyCollectionChanged notifier;
         private ScrollViewer scrollViewer;
         private Button gotoNewMessagesButton;
-        
+
         protected override void OnAttached()
         {
             base.OnAttached();
             notifier = AssociatedObject.Items as INotifyCollectionChanged;
             notifier.CollectionChanged += ItemsControl_CollectionChanged;
-            
+
 
             AssociatedObject.Loaded += (o, e) =>
             {
@@ -78,7 +78,7 @@ namespace NetChat2.Converters
 
         private void ItemsControl_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action == NotifyCollectionChangedAction.Reset)
+            if (e.Action == NotifyCollectionChangedAction.Reset)
                 GoToIndex(AssociatedObject.Items.Count - 1);
 
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -161,7 +161,7 @@ namespace NetChat2.Converters
                 _newMessagesCount = value;
                 if (gotoNewMessagesButton == null) return;
                 gotoNewMessagesButton.Content = value;
-                if(_newMessagesCount > 0)
+                if (_newMessagesCount > 0)
                     gotoNewMessagesButton.Visibility = Visibility.Visible;
                 else
                     gotoNewMessagesButton.Visibility = Visibility.Collapsed;

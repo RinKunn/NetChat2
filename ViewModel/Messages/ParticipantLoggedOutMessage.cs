@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetChat2.Services
+namespace NetChat2.ViewModel.Messages
 {
-    public interface IChannelService
+    public class ParticipantLoggedOutMessage : IMessage
     {
-        
     }
 }
