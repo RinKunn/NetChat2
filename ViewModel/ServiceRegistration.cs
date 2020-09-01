@@ -8,14 +8,14 @@ using NetChat2.ViewModel;
 
 namespace NetChat2
 {
-    public static class DIRegistration
+    public static class ServiceRegistration
     {
         public static ContainerBuilder RegisterAppServices(this ContainerBuilder builder)
         {
             builder.RegisterType<ChatService>().As<IChatService>().SingleInstance();
             builder.RegisterType<FileNetchatHub>()
                 .As<INetchatHub>()
-                .WithParameter(new TypedParameter(typeof(string), System.Configuration.ConfigurationManager.AppSettings["MessagesPath"]))
+                .WithParameter(new TypedParameter(typeof(string), System.Configuration.ConfigurationManager.AppSettings["MessagesPath2"]))
                 .InstancePerLifetimeScope();
             builder.RegisterType<MainViewModel>();
 

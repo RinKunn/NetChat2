@@ -14,6 +14,7 @@
         Background="Green"
         Title="Netchat 2.0" Height="450" Width="800"
         Style="{StaticResource CustomWindowStyle}"
+        DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
         MinWidth="400">
     
     <i:Interaction.Triggers>
@@ -193,10 +194,6 @@
 
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="325*"/>
-            <ColumnDefinition Width="457*"/>
-        </Grid.ColumnDefinitions>
         <Grid.Background>
             <SolidColorBrush Color="{StaticResource ChatBackground}"/>
         </Grid.Background>
