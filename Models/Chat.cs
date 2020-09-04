@@ -8,19 +8,9 @@ namespace NetChat2.Models
 {
     public class Chat
     {
-        public Chat(int id, string title, string description)
-        {
-            Id = id;
-            Title = title;
-            Description = description;
-        }
-
-        public int Id { get; private set; }
-        public string Title { get; private set; }
-        public string Description { get; private set; }
-
-        public User User { get; }
-
-        
+        public int Id { get; set; } 
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public User User { get; set; }
     }
 }

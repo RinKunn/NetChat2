@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using NetChat2.Models;
 
-namespace NetChat2.Models
+namespace NetChat2.ViewModel
 {
+
     public interface IReadable
     {
         bool IsReaded { get; }
@@ -36,12 +34,11 @@ namespace NetChat2.Models
             _isReaded = isReaded;
             _isOriginNative = isOriginNative;
         }
-            
+
         public void Read()
         {
             if (IsReaded) return;
             Set(nameof(IsReaded), ref _isReaded, true);
         }
-
     }
 }

@@ -1,62 +1,45 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using NetChat2.Connector;
 using NetChat2.Models;
-using NetChat2.Services.Persistance;
+using NetChat2.Persistance;
 
 namespace NetChat2.Services
 {
     public class DefaultChatLoader : IChatLoader
     {
         private readonly IChatRepository _chatRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         
         public DefaultChatLoader(
             IChatRepository chatRepository,
-            IUserRepository userRepository,
             IUserService userService)
         {
-            _chatRepository = chatRepository;
-            _userRepository = userRepository;
-            _userService = userService;
+            _chatRepository = chatRepository ?? throw new ArgumentNullException(nameof(chatRepository));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public User[] LoadChatUsers(Chat chat)
+        public User[] LoadChatUsers(int chatId)
         {
-            var chatData = _chatRepository.GetChatData(chat.Id);
+            var chatData = _chatRepository.GetChatById(chatId);
             if (chatData == null) return null;
 
-            string meEnvName = Environment.UserName.ToUpper();
-
-            var reader = new MessageFileLoader(chatData.ChatPath, chatData.Encoding);
+            var reader = new MessageFileLoader(chatData.ChatPath, Encoding.GetEncoding(chatData.EncodingName));
 
             return reader.LoadMessages()?
                 .Select(m => m.UserName)
                 .Distinct()
-                .Select(envName =>
-                {
-                    var userData = _userRepository.GetUserByEnvName(envName);
-                    return new User()
-                    {
-                        //TODO: use mappers
-                        EnvName = userData.EnvName,
-                        Surname = userData.Surname,
-                        Name = userData.Name,
-                        Lastname = userData.Lastname,
-                        Self = userData.EnvName == meEnvName,
-                        Status = (UserStatus)userData.Status,
-                        StatusChangedDateTime = userData.StatusLastChanged
-                    };
-                })
+                .Select(envName => _userService.GetUser(envName))
                 .ToArray();
         }
 
         public Chat LoadChat(int chatId)
         {
-            ChatData chatData = _chatRepository.GetChatData(chatId);
+            var me = _userService.GetMe();
+            StoredChatData chatData = _chatRepository.GetChatById(chatId);
             if (chatData == null) return null;
-            return new Chat(chatData.Id, chatData.Title, chatData.Description);
+            return new Chat(chatData.Id, chatData.Title, chatData.Description, me);
         }
     }
 }

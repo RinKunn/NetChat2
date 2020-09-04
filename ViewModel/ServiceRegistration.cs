@@ -5,23 +5,35 @@ using NetChat2.Connector;
 using NetChat2.Models;
 using NetChat2.Services;
 using NetChat2.ViewModel;
+using NetChat2.Persistance;
 
 namespace NetChat2
 {
     public static class ServiceRegistration
     {
-        public static ContainerBuilder RegisterAppServices(this ContainerBuilder builder)
+        public static ContainerBuilder RegisterAppServices(this ContainerBuilder builder, string chatsPath = null, string usersPath = null)
         {
-            //builder.RegisterType<ChatService>().As<IChatService>().SingleInstance();
-            builder.RegisterType<MessageFileNotifier>()
-                .As<IMessageFileNotifier>()
-                .WithParameter(new TypedParameter(typeof(string), System.Configuration.ConfigurationManager.AppSettings["MessagesPath2"]))
+            string ChatSourcePath = chatsPath ?? System.Configuration.ConfigurationManager.AppSettings["ChatSourcePath"];
+            string UserSourcePath = usersPath ?? System.Configuration.ConfigurationManager.AppSettings["UserSourcePath"];
+
+            builder
+                .RegisterType<JsonChatRepository>()
+                .As<IChatRepository>()
+                .WithParameter(new TypedParameter(typeof(string), ChatSourcePath))
                 .InstancePerLifetimeScope();
+            builder
+                .RegisterType<JsonUserRepository>()
+                .As<IUserRepository>()
+                .WithParameter(new TypedParameter(typeof(string), UserSourcePath))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<DefaultUserService>().As<IUserService>().InstancePerLifetimeScope();
+            builder.RegisterType<DefaultMessageService>().As<IMessageService>().InstancePerLifetimeScope();
+            builder.RegisterType<DefaultChatLoader>().As<IChatLoader>().InstancePerLifetimeScope();
+            builder.RegisterType<DefaultMessageHub>().As<IMessageHub>().SingleInstance();
+
             builder.RegisterType<MainViewModel>();
 
-            var processesCount = Process.GetProcessesByName("NetChat2").Length;
-            //var user = new User(Environment.UserName.ToUpper() + (processesCount > 1 ? $"_{processesCount}" : string.Empty));
-            //builder.RegisterInstance<User>(user);
             return builder;
         }
     }

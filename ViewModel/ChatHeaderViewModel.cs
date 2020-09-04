@@ -27,7 +27,7 @@ namespace NetChat2.ViewModel
         private ChatHeaderViewModel(Chat chat, IChatLoader chatLoader)
         {
             this.Title = chat.Title;
-            this.ParticipantCount = chatLoader.LoadChatUsers(chat).Length;
+            this.ParticipantCount = chatLoader.LoadChatUsers(chat.Id).Length;
             MessengerInstance.Register<ParticipantLoggedInMessage>(this, (m) => ParticipantCount++);
             MessengerInstance.Register<ParticipantLoggedOutMessage>(this, (m) => ParticipantCount--);
         }

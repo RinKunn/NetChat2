@@ -1,38 +1,74 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using NetChat2.Connector;
+using NetChat2.Persistance;
+
 
 namespace NetChat2.Services
 {
     public interface IMessageHub : IDisposable
     {
-        void OnMessageReceived(Action<NetChatMessage> action);
+        void Subscribe(int chatId, Action<NetChatMessage> action);
+        void Unsubscribe(int chatId);
     }
 
     public class DefaultMessageHub : IMessageHub
     {
-        private Action<NetChatMessage> _action;
-        private MessageFileNotifier _notifier;
+        private readonly Dictionary<int, NotifierInfo> _notifiers;
+        private readonly IChatRepository _chatRepository;
 
-        public DefaultMessageHub(string path, Encoding encoding)
+        public DefaultMessageHub(IChatRepository chatRepository)
         {
-            _notifier = new MessageFileNotifier(path, encoding);
-            _notifier.OnMessageReceived += OnMessageReceived;
+            _chatRepository = chatRepository;
+            _notifiers = new Dictionary<int, NotifierInfo>();
         }
 
-        private void OnMessageReceived(NetChatMessage message)
+
+        public void Subscribe(int chatId, Action<NetChatMessage> action)
         {
-            _action?.Invoke(message);
+            OnMessageReceivedHandler handler = (netMessage) => action?.Invoke(netMessage);
+
+            if (_notifiers.ContainsKey(chatId))
+            {
+                var subscriptionInfo = _notifiers[chatId];
+                subscriptionInfo.Notifier.OnMessageReceived -= subscriptionInfo.Handler;
+
+                subscriptionInfo.Notifier.OnMessageReceived += handler;
+                subscriptionInfo.Handler = handler;
+                return;
+            }
+
+            var chatData = _chatRepository.GetChatById(chatId);
+            var notifier = new MessageFileNotifier(chatData.ChatPath, Encoding.GetEncoding(chatData.EncodingName));
+            notifier.OnMessageReceived += handler;
+            _notifiers.Add(chatId, new NotifierInfo() { Notifier = notifier, Handler = handler});
         }
 
-        public void OnMessageReceived(Action<NetChatMessage> action)
+        public void Unsubscribe(int chatId)
         {
-            _action = action;
+            if (!_notifiers.ContainsKey(chatId)) return;
+            var subscriptionInfo = _notifiers[chatId];
+            subscriptionInfo.Notifier.OnMessageReceived -= subscriptionInfo.Handler;
+            _notifiers.Remove(chatId);
         }
 
         public void Dispose()
         {
-            _notifier.Dispose();
+            foreach(var subscriptionInfo in _notifiers.Values)
+            {
+                subscriptionInfo.Notifier.OnMessageReceived -= subscriptionInfo.Handler;
+                subscriptionInfo.Notifier.StopWatching();
+            }
+            _notifiers.Clear();
+        }
+
+        private struct NotifierInfo
+        {
+            public MessageFileNotifier Notifier { get; set; }
+            public OnMessageReceivedHandler Handler { get; set; }
         }
     }
+    
+
 }

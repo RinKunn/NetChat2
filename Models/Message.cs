@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace NetChat2.Models
 {
-    public class TextMessage : Message
+    public class Message
     {
-        public string Text { get; set; }
+        public DateTime Date { get; set; }
+        public string SenderId { get; set; }
+        public int ChatId { get; set; }
     }
 }

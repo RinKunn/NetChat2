@@ -9,7 +9,7 @@ namespace NetChat2.Services
 {
     public interface IMessageService
     {
-        void SendMessage(Chat chat, TextMessage message);
+        void SendMessage(int chatId, TextMessage message);
         List<TextMessage> LoadMessages(int chatId, int limit = 0);
     }
 }

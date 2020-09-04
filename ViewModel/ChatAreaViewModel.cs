@@ -15,7 +15,7 @@ namespace NetChat2.ViewModel
     public class ChatAreaViewModel : ViewModelBase
     {
         private readonly IMessageService _messageService;
-
+        
         private readonly Chat _chat;
 
         private ObservableCollection<TextMessageViewModel> _messages;
@@ -56,10 +56,10 @@ namespace NetChat2.ViewModel
                 _messages = new ObservableCollection<TextMessageViewModel>(
                     _messageService.LoadMessages(1, 100)
                     .Select(m => new TextMessageViewModel(
-                        m.CreatedDateTime,
-                        m.Author,
+                        m.Date,
+                        m.Sender,
                         m.MessageText,
-                        m.Author.EnvName == Environment.UserName.ToUpper(),
+                        m.Sender.EnvName == _chat.User.EnvName,
                         true)));
                 MessengerInstance.Register<MessageReceived>(this, _chat.Title, (message) => HandleMessageReceived(message.TextMessageViewModel));
                 IsLoaded = true;
@@ -88,8 +88,8 @@ namespace NetChat2.ViewModel
             _messageService.SendMessage(_chat,
                 new TextMessage()
                 {
-                    CreatedDateTime = DateTime.Now,
-                    Author = _chat.User,
+                    Date = DateTime.Now,
+                    Sender = _chat.User,
                     MessageText = TextMessageViewModel
                 });
             TextMessageViewModel = string.Empty;

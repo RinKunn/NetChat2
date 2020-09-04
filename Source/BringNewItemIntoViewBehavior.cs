@@ -5,7 +5,7 @@ using System.Windows;
 using System;
 using System.Collections;
 using System.Windows.Media;
-using NetChat2.Models;
+using NetChat2.ViewModel;
 
 namespace NetChat2.Source
 {

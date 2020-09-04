@@ -33,10 +33,15 @@ namespace NetChat2.Connector
             OnMessageReceived?.Invoke(new NetChatMessage(newLine));
         }
 
-        public void Dispose()
+        public void StopWatching()
         {
             _fileWatcher.EnableRaisingEvents = false;
             _fileWatcher.Changed -= OnFileChangedHandler;
+        }
+
+        public void Dispose()
+        {
+            StopWatching();
             _fileWatcher.Dispose();
         }
     }

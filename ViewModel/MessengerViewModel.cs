@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using NetChat2.Models;
+using NetChat2.Services;
 using NetChat2.ViewModel.Messages;
 
 namespace NetChat2.ViewModel
@@ -35,11 +31,19 @@ namespace NetChat2.ViewModel
         }
 
 
-        public MessengerViewModel(Chat chat)
+        public MessengerViewModel(Chat chat, IMessageHub hub, IUserService userService)
         {
             Header = new ChatHeaderViewModel(chat);
             Area = new ChatAreaViewModel(chat);
             Info = ChatInfoViewModel.Hidden();
+
+            hub.Subscribe(chat.Id, (message) => MessengerInstance.Send<MessageReceived>(
+                new MessageReceived(
+                    message.DateTime,
+                    userService.GetUser(message.UserName),
+                    message.Text,
+                    chat.User)
+                ));
 
             MessengerInstance.Register<ShowViewMessage>(this, "info", (m) => Info = new ChatInfoViewModel(m.Chat));
         }

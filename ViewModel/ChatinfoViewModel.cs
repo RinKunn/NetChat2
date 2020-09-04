@@ -28,7 +28,7 @@ namespace NetChat2.ViewModel
         {
             Title = chat.Title;
             Description = chat.Description;
-            Users = new ObservableCollection<User>(chatLoader.LoadChatUsers(chat));
+            Users = new ObservableCollection<User>(chatLoader.LoadChatUsers(chat.Id));
         }
 
         private ChatInfoViewModel() { }

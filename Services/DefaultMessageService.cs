@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NetChat2.Connector;
 using NetChat2.Models;
-using NetChat2.Services.Persistance;
+using NetChat2.Persistance;
 
 namespace NetChat2.Services
 {
@@ -13,34 +15,34 @@ namespace NetChat2.Services
 
         public DefaultMessageService(IChatRepository chatRepository, IUserService userService)
         {
-            _chatRepository = chatRepository;
-            _userService = userService;
+            _chatRepository = chatRepository ?? throw new ArgumentNullException(nameof(chatRepository));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public List<TextMessage> LoadMessages(int chatId, int limit = 0)
         {
-            var chatData = _chatRepository.GetChatData(chatId);
-            var loader = new MessageFileLoader(chatData.ChatPath, chatData.Encoding);
+            var chatData = _chatRepository.GetChatById(chatId);
+            var loader = new MessageFileLoader(chatData.ChatPath, Encoding.GetEncoding(chatData.EncodingName));
 
             return loader.LoadMessages(limit)?
                 .Where(netMessage => netMessage.Text != "Logon" && netMessage.Text != "Logout")
                 .Select(netMessage =>
                     new TextMessage()
                     {
-                        CreatedDateTime = netMessage.DateTime,
+                        Date = netMessage.DateTime,
                         MessageText = netMessage.Text,
-                        Author = _userService.GetUser(netMessage.UserName)
+                        Sender = _userService.GetUser(netMessage.UserName)
                     })
                 .ToList();
         }
 
-        public void SendMessage(Chat chat, TextMessage message)
+        public void SendMessage(int chatId, TextMessage message)
         {
-            var chatData = _chatRepository.GetChatData(chat.Id);
-            var sender = new MessageFileSender(chatData.ChatPath, chatData.Encoding);
+            var chatData = _chatRepository.GetChatById(chatId);
+            var sender = new MessageFileSender(chatData.ChatPath, Encoding.GetEncoding(chatData.EncodingName));
 
             sender.SendMessage(new NetChatMessage(
-                message.Author.EnvName, message.MessageText, message.CreatedDateTime));
+                message.Sender.EnvName, message.MessageText, message.Date));
         }
     }
 }

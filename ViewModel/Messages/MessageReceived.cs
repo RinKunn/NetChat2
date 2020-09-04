@@ -1,4 +1,5 @@
 ﻿using NetChat2.Models;
+using System;
 
 namespace NetChat2.ViewModel.Messages
 {
@@ -6,6 +7,15 @@ namespace NetChat2.ViewModel.Messages
     {
         public TextMessageViewModel TextMessageViewModel { get; private set; }
 
-        public MessageReceived(TextMessageViewModel message) => TextMessageViewModel = message;
+        public MessageReceived(DateTime dateTime, User author, string text, User currentUser)
+        {
+            if (author == null) throw new ArgumentNullException(nameof(author));
+            if (currentUser == null) throw new ArgumentNullException(nameof(currentUser));
+
+            TextMessageViewModel = new TextMessageViewModel(
+                dateTime, author, text,
+                author.EnvName == currentUser.EnvName,
+                author.EnvName == currentUser.EnvName);
+        }
     }
 }
