@@ -6,18 +6,13 @@ using System.Threading.Tasks;
 
 namespace NetChat2
 {
-    public interface ISetting
+    public class UserConfiguration 
     {
-        string DataFilePath { get; }
-    }
+        public string UserId { get; set; }
+        public string LoginMessageString { get; set; }
+        public string LogoutMessageString { get; set; }
 
-    public class Configuration : ISetting
-    {
-        private string _dataFilePath;
-
-        public string DataFilePath => _dataFilePath;
-
-        public void Init()
+        public UserConfiguration()
         {
 
         }

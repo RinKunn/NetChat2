@@ -22,9 +22,11 @@ namespace NetChat2.ViewModel
             set => Set(ref _participantCount, value);
         }
 
-        public ChatHeaderViewModel(Chat chat) : this(chat, Locator.Current.GetService<IChatLoader>()) { }
+        public ChatHeaderViewModel(ChatData chat) 
+            : this(chat, Locator.Current.GetService<IChatLoader>()) 
+        { }
 
-        private ChatHeaderViewModel(Chat chat, IChatLoader chatLoader)
+        private ChatHeaderViewModel(ChatData chat, IChatLoader chatLoader)
         {
             this.Title = chat.Title;
             this.ParticipantCount = chatLoader.LoadChatUsers(chat.Id).Length;

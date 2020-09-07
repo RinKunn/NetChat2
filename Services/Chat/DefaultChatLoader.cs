@@ -25,7 +25,7 @@ namespace NetChat2.Services
             var chatData = _chatRepository.GetChatById(chatId);
             if (chatData == null) return null;
 
-            var reader = new MessageFileLoader(chatData.ChatPath, Encoding.GetEncoding(chatData.EncodingName));
+            var reader = new MessageFileLoader(chatData.SourcePath, Encoding.GetEncoding(chatData.SourceEncodingName));
 
             return reader.LoadMessages()?
                 .Select(m => m.UserName)
@@ -34,12 +34,18 @@ namespace NetChat2.Services
                 .ToArray();
         }
 
-        public Chat LoadChat(int chatId)
+        public ChatData LoadChat(int chatId)
         {
             var me = _userService.GetMe();
             StoredChatData chatData = _chatRepository.GetChatById(chatId);
             if (chatData == null) return null;
-            return new Chat(chatData.Id, chatData.Title, chatData.Description, me);
+            return new ChatData()
+            {
+                Id = chatData.Id,
+                Title = chatData.Title,
+                Description = chatData.Description,
+                User = me
+            };
         }
     }
 }

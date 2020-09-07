@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using NetChat2.Models;
-using Newtonsoft.Json;
 
 namespace NetChat2.Persistance
 {
@@ -11,17 +8,17 @@ namespace NetChat2.Persistance
     {
         StoredUserData[] GetAll();
 
-        StoredUserData GetUserById(string envUserName); 
-        
-        void ChangeStatus(string envUserName, UserStatus userStatus);
+        StoredUserData GetUserById(string userId);
 
         bool Add(string id, string surname, string name, string lastname, UserStatus userStatus, DateTime statusChangedDate);
+
+        bool Update(StoredUserData userData);
+
+        //void ChangeStatus(string userId, UserStatus userStatus);
 
         void IncludeToChat(string userId, int chatId);
 
         int OnlineUsersCount(IEnumerable<string> userIds = null);
-
-        string GetMyUserId();
     }
 
 }

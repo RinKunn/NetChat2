@@ -33,27 +33,13 @@ namespace NetChat2.Persistance
             return users[userId];
         }
 
-        public void ChangeStatus(string userId, UserStatus status)
-        {
-            if (string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
-
-            Dictionary<string, StoredUserData> users = LoadData();
-
-            if (!users.ContainsKey(userId)) throw new UserNotExistsExecption(userId);
-
-            users[userId].Status = (int)status;
-            users[userId].StatusLastChanged = DateTime.Now;
-
-            SaveData(users);
-        }
-
         public bool Add(string userId, string surname, string name, string lastname,
             UserStatus userStatus, DateTime statusChangedDate)
         {
             if (string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
             if (string.IsNullOrEmpty(surname)) throw new ArgumentNullException(nameof(surname));
 
-            Dictionary<string, StoredUserData> users = LoadData();
+            var users = LoadData();
 
             if (users.ContainsKey(userId)) return false;
             users.Add(userId, new StoredUserData()
@@ -69,6 +55,41 @@ namespace NetChat2.Persistance
             return true;
         }
 
+        public bool Update(StoredUserData userData)
+        {
+            if (userData == null || string.IsNullOrEmpty(userData.Id)) throw new ArgumentNullException(nameof(userData));
+
+            var users = LoadData();
+
+            if (!users.ContainsKey(userData.Id)) return false;
+            users[userData.Id] = userData;
+            SaveData(users);
+            return true;
+        }
+
+
+        //public void ChangeStatus(string userId, UserStatus status)
+        //{
+        //    if (string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
+
+        //    Dictionary<string, StoredUserData> users = LoadData();
+
+        //    if (!users.ContainsKey(userId)) throw new UserNotExistsExecption(userId);
+
+        //    users[userId].Status = (int)status;
+        //    users[userId].StatusLastChanged = DateTime.Now;
+
+        //    SaveData(users);
+        //}
+
+        public int OnlineUsersCount(IEnumerable<string> userIds = null)
+        {
+            var users = LoadData();
+            if (users.Count == 0) return 0;
+            return users
+                .Where(pair => userIds.Contains(pair.Key))
+                .Sum(s => (int)s.Value.Status);
+        }
 
         public void IncludeToChat(string userId, int chatId)
         {
@@ -96,15 +117,6 @@ namespace NetChat2.Persistance
         private void SaveData(Dictionary<string, StoredUserData> users)
         {
             FileAttempts.TryWriteAllText(_path, JsonConvert.SerializeObject(users), 1);
-        }
-
-        public int OnlineUsersCount(IEnumerable<string> userIds = null)
-        {
-            var users = LoadData();
-            if (users.Count == 0) return 0;
-            return users
-                .Where(pair => userIds.Contains(pair.Key))
-                .Sum(s => (int)s.Value.Status);
-        }
+        }   
     }
 }

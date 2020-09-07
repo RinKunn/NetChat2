@@ -27,7 +27,7 @@ namespace NetChat2.Persistance
                 ? JsonConvert.DeserializeObject<List<StoredChatData>>(File.ReadAllText(_path))
                 : new List<StoredChatData>();
 
-            if (chats.SingleOrDefault(c => c.ChatPath == path) != null) return false;
+            if (chats.SingleOrDefault(c => c.SourcePath == path) != null) return false;
 
             StoredChatData chatData = new StoredChatData()
             {
@@ -35,15 +35,14 @@ namespace NetChat2.Persistance
                 Title = title,
                 AuthorId = authorId,
                 Description = description,
-                ChatPath = path,
-                EncodingName = encoding == null ? Encoding.UTF8.EncodingName : encoding.HeaderName,
+                SourcePath = path,
+                SourceEncodingName = encoding == null ? Encoding.UTF8.SourceEncodingName : encoding.HeaderName,
                 Members = new List<string>() { authorId }
             };
             
             chats.Add(chatData);
 
-            //TODO: Add write attempts
-            File.WriteAllText(_path, JsonConvert.SerializeObject(chats));
+            FileAttempts.TryWriteAllText(_path, JsonConvert.SerializeObject(chats));
             return true;
         }
 

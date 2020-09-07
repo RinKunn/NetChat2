@@ -40,7 +40,7 @@ namespace NetChat2.Services
             }
 
             var chatData = _chatRepository.GetChatById(chatId);
-            var notifier = new MessageFileNotifier(chatData.ChatPath, Encoding.GetEncoding(chatData.EncodingName));
+            var notifier = new MessageFileNotifier(chatData.SourcePath, Encoding.GetEncoding(chatData.SourceEncodingName));
             notifier.OnMessageReceived += handler;
             _notifiers.Add(chatId, new NotifierInfo() { Notifier = notifier, Handler = handler});
         }

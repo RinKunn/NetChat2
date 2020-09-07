@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>NetChat2</RootNamespace>
     <AssemblyName>NetChat2</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -16,6 +16,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -84,6 +85,7 @@
       <HintPath>packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -108,34 +110,37 @@
     <Compile Include="Commands\NotifyTaskCompletion.cs" />
     <Compile Include="Commands\RelayCommandAsync.cs" />
     <Compile Include="Models\Message.cs" />
-    <Compile Include="Models\UserChatData.cs" />
+    <Compile Include="Models\Chat.cs" />
     <Compile Include="Persistance\FileAttempts.cs" />
-    <Compile Include="Persistance\ChatNotExistsExecption.cs" />
-    <Compile Include="Persistance\UserNotExistsExecption.cs" />
-    <Compile Include="Services\DefaultMessageService.cs" />
-    <Compile Include="Services\DefaultUserService.cs" />
-    <Compile Include="Services\DefaultChatLoader.cs" />
-    <Compile Include="Services\IAuthentication.cs" />
-    <Compile Include="Services\IMessageHub.cs" />
-    <Compile Include="Services\IMessageService.cs" />
-    <Compile Include="Persistance\StoredChatData.cs" />
-    <Compile Include="Persistance\JsonChatRepository.cs" />
-    <Compile Include="Persistance\JsonUserRepository.cs" />
-    <Compile Include="Persistance\StoredUserData.cs" />
-    <Compile Include="Persistance\IUserRepository.cs" />
-    <Compile Include="Persistance\IChatRepository.cs" />
+    <Compile Include="Persistance\ChatPersistance\ChatNotExistsExecption.cs" />
+    <Compile Include="Persistance\UserPersistance\UserNotExistsExecption.cs" />
+    <Compile Include="Services\Messaging\DefaultMessageSender.cs" />
+    <Compile Include="Services\Messaging\DefaultMessageLoader.cs" />
+    <Compile Include="Services\Messaging\IMessageLoader.cs" />
+    <Compile Include="Services\User\DefaultUserService.cs" />
+    <Compile Include="Services\Chat\DefaultChatLoader.cs" />
+    <Compile Include="Services\Authentication\IAuthentication.cs" />
+    <Compile Include="Services\Messaging\IMessageHub.cs" />
+    <Compile Include="Services\Messaging\IMessageSender.cs" />
+    <Compile Include="Persistance\ChatPersistance\StoredChatData.cs" />
+    <Compile Include="Persistance\ChatPersistance\JsonChatRepository.cs" />
+    <Compile Include="Persistance\UserPersistance\JsonUserRepository.cs" />
+    <Compile Include="Persistance\UserPersistance\StoredUserData.cs" />
+    <Compile Include="Persistance\UserPersistance\IUserRepository.cs" />
+    <Compile Include="Persistance\ChatPersistance\IChatRepository.cs" />
+    <Compile Include="Services\Authentication\AuthenticationException.cs" />
     <Compile Include="ViewModel\Messages\ShowViewMessage.cs" />
     <Compile Include="ViewModel\Messages\ThrowedExceptionMessage.cs" />
     <Compile Include="ViewModel\Messages\IMessage.cs" />
     <Compile Include="ViewModel\Messages\MessageReceived.cs" />
     <Compile Include="ViewModel\Messages\ParticipantLoggedInMessage.cs" />
     <Compile Include="ViewModel\Messages\ParticipantLoggedOutMessage.cs" />
-    <Compile Include="Models\Chat.cs" />
+    <Compile Include="Models\ChatData.cs" />
     <Compile Include="Source\BindingProxy.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Source\BringNewItemIntoViewBehavior.cs" />
     <Compile Include="Models\TextMessage.cs" />
-    <Compile Include="Services\IChatLoader.cs" />
+    <Compile Include="Services\Chat\IChatLoader.cs" />
     <Compile Include="Source\WindowStyle.xaml.cs" />
     <Compile Include="ViewModel\ChatHeaderViewModel.cs" />
     <Compile Include="ViewModel\ChatInfoViewModel.cs" />
@@ -144,8 +149,8 @@
     <Compile Include="ViewModel\ServiceRegistration.cs" />
     <Compile Include="ViewModel\TextMessageViewModel.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Services\ChatService.cs" />
-    <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\Chat\ChatService.cs" />
+    <Compile Include="Services\User\IUserService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

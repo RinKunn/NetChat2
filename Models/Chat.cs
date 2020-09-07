@@ -8,9 +8,11 @@ namespace NetChat2.Models
 {
     public class Chat
     {
-        public int Id { get; set; } 
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public long Id { get; set; }
+        public ChatData ChatData { get; set; }
         public User User { get; set; }
+        public int UnreadCount { get; set; }
+        //public bool IsPinned { get; set; }
+        //public TextMessage LastMessage { get; set; }
     }
 }

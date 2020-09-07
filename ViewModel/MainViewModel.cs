@@ -9,15 +9,16 @@ namespace NetChat2.ViewModel
     public class MainViewModel : ViewModelBase
     {
         public MessengerViewModel MessengerViewModel { get; private set; }
-        private readonly IUserService _userService;
+        private readonly IAuthentication _authentication;
+        private readonly string _userId;
 
-        public MainViewModel(IChatLoader chatLoader, IMessageHub messageHub, IUserService userService)
+        public MainViewModel(IChatLoader chatLoader, IMessageHub messageHub, IAuthentication authentication, IUserService userService)
         {
-            _userService = userService;
+            _authentication = authentication;
             var chat = chatLoader.LoadChat(1);
             if (chat == null) throw new ArgumentNullException(nameof(chat));
             MessengerViewModel = new MessengerViewModel(chat, messageHub, userService);
-            
+            _userId = userService.GetMyUserId();
         }
 
         private ICommand _logonCommand;
@@ -31,14 +32,15 @@ namespace NetChat2.ViewModel
             _logoutCommand ??
             (_logoutCommand = new RelayCommand(Logout));
 
+
         private void Logon()
         {
-            _userService.Logon();
+            _authentication.Login(_userId);
         }
 
         private void Logout()
         {
-            _userService.Logout();
+            _authentication.Logout(_userId);
         }
     }
 }

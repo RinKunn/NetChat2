@@ -7,9 +7,9 @@ using NetChat2.Models;
 
 namespace NetChat2.Services
 {
-    public interface IMessageService
+    public interface IMessageSender
     {
         void SendMessage(int chatId, TextMessage message);
-        List<TextMessage> LoadMessages(int chatId, int limit = 0);
+        
     }
 }

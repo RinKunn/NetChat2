@@ -9,6 +9,6 @@ namespace NetChat2.Services
     public interface IChatLoader
     {
         User[] LoadChatUsers(int chatId);
-        Chat LoadChat(int chatId);
+        ChatData LoadChat(int chatId);
     }
 }

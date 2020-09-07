@@ -13,26 +13,22 @@ namespace NetChat2.ViewModel
 
     public class TextMessageViewModel : ObservableObject, IReadable
     {
-        private DateTime _dateTime;
-        private User _user;
-        private string _text;
+        private User _sender;
         private bool _isReaded;
-        private bool _isOriginNative;
 
-        public DateTime DateTime => _dateTime;
-        public string Username => _user.Name;
-        public string Text => _text;
+        public DateTime DateTime { get; }
+        public string SenderName => _sender.Name;
+        public string Text { get; }
         public bool IsReaded => _isReaded;
-        public bool IsOriginNative => _isOriginNative;
+        public bool IsOriginNative { get; }
 
-
-        public TextMessageViewModel(DateTime dateTime, User user, string text, bool isOriginNative = false, bool isReaded = false)
+        public TextMessageViewModel(DateTime dateTime, User sender, string text, bool isOriginNative = false, bool isReaded = false)
         {
-            _dateTime = dateTime;
-            _user = user;
-            _text = text;
+            DateTime = dateTime;
+            _sender = sender;
+            Text = text;
             _isReaded = isReaded;
-            _isOriginNative = isOriginNative;
+            IsOriginNative = isOriginNative;
         }
 
         public void Read()
