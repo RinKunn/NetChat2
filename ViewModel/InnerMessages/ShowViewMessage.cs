@@ -9,7 +9,7 @@ namespace NetChat2.ViewModel.Messages
 {
     public class ShowViewMessage : IMessage
     {
-        public ChatData Chat { get; private set; }
+        public Chat Chat { get; private set; }
 
         //public ShowViewMessage(Chat chat) => Chat = chat;
     }

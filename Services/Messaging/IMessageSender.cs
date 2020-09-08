@@ -10,6 +10,6 @@ namespace NetChat2.Services
     public interface IMessageSender
     {
         void SendMessage(int chatId, TextMessage message);
-        
+        void SendUserStatusMessage(int chatId, string userId, DateTime dateTime, UserStatus userStatus);
     }
 }

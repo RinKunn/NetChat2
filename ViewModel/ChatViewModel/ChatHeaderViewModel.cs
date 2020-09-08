@@ -22,14 +22,14 @@ namespace NetChat2.ViewModel
             set => Set(ref _participantCount, value);
         }
 
-        public ChatHeaderViewModel(ChatData chat) 
-            : this(chat, Locator.Current.GetService<IChatLoader>()) 
+        public ChatHeaderViewModel(Chat chat) 
+            : this(chat, Locator.Current.GetService<IChatService>()) 
         { }
 
-        private ChatHeaderViewModel(ChatData chat, IChatLoader chatLoader)
+        private ChatHeaderViewModel(Chat chat, IChatService chatService)
         {
-            this.Title = chat.Title;
-            this.ParticipantCount = chatLoader.LoadChatUsers(chat.Id).Length;
+            this.Title = chat.ChatData.Title;
+            this.ParticipantCount = chatService.GetOnlineUsersCount(chat.ChatData.Id);
             MessengerInstance.Register<ParticipantLoggedInMessage>(this, (m) => ParticipantCount++);
             MessengerInstance.Register<ParticipantLoggedOutMessage>(this, (m) => ParticipantCount--);
         }

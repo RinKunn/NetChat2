@@ -18,7 +18,7 @@ namespace NetChat2.Persistance
 
         public StoredUserData[] GetAll()
         {
-            if (!File.Exists(_path)) return null;
+            if (!File.Exists(_path) || (new FileInfo(_path)).Length == 0) return null;
             return LoadData().Values.ToArray();
         }
 

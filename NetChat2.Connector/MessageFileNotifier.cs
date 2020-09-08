@@ -12,6 +12,8 @@ namespace NetChat2.Connector
         private FileSystemWatcher _fileWatcher;
 
         public event OnMessageReceivedHandler OnMessageReceived;
+        public event OnUserLoggedInHandler OnUserLoggedIn;
+        public event OnUserLoggedOutHandler OnUserLoggedOut;
         
         public MessageFileNotifier(string path, Encoding encoding)
         {
@@ -30,7 +32,19 @@ namespace NetChat2.Connector
         {
             if (e.Name != _filename) return;
             string newLine = FileHelper.ReadLastLine(_path, _encoding);
-            OnMessageReceived?.Invoke(new NetChatMessage(newLine));
+            var message = new NetChatMessage(newLine);
+            switch(message.Text)
+            {
+                case "Logon":
+                    OnUserLoggedIn?.Invoke(new OnUserStatusChangedArgs(message.UserName, message.DateTime));
+                    break;
+                case "Logout":
+                    OnUserLoggedOut?.Invoke(new OnUserStatusChangedArgs(message.UserName, message.DateTime));
+                    break;
+                default:
+                    OnMessageReceived?.Invoke(message);
+                    break;
+            }
         }
 
         public void StopWatching()

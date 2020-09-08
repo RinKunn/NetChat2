@@ -12,8 +12,8 @@ namespace NetChat2.Services
 {
     public interface IAuthentication
     {
-        void Login(string userId);
-        void Logout(string userId);
+        void Login();
+        void Logout();
     }
 
     public class Authentication : IAuthentication
@@ -21,80 +21,42 @@ namespace NetChat2.Services
         //private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly IMessageSender _messageSender;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public Authentication(IUserRepository userRepository, IMessageSender messageSender)
+        public Authentication(IMessageSender messageSender, IUserService userService)
         {
-            _userRepository = userRepository;
             _messageSender = messageSender;
+            _userService = userService;
         }
 
-        public void Login(string userId)
+        public void Login()
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId), "Logging in userId must not be empty");
-
             DateTime logonDate = DateTime.Now;
-            var user = _userRepository.GetUserById(userId);
-            if (user == null)
-            {
-                user = new StoredUserData()
-                {
-                    Id = userId,
-                    Surname = userId,
-                    Name = "",
-                    Lastname = "",
-                    Status = (int)UserStatus.Online,
-                    StatusLastChanged = logonDate,
-                    ChatsIds = new List<int>() { 1 }
-                };
-            }
-            else
-            {
-                user.Status = (int)UserStatus.Online;
-                user.StatusLastChanged = DateTime.Now;
-            }
-            if (!_userRepository.Update(user))
-                throw new AuthenticationException($"Cannot set logon status to '{userId}'");
+            var user = _userService.GetMe();
+            if (user.ChatIds.Count == 0) user.ChatIds.Add(1);
+            
+            if (!_userService.CreateOrUpdate(user))
+                throw new AuthenticationException($"Cannot set logon status to '{user.Id}'");
 
-            foreach (var chatId in user.ChatsIds)
+            foreach (var chatId in user.ChatIds)
             {
-                _messageSender.SendMessage(chatId, new TextMessage()
-                {
-                    Date = logonDate,
-                    Sender = user,
-                    ChatId = chatId,
-                    Text = "Logon"
-                });
+                _messageSender.SendUserStatusMessage(chatId, user.Id, logonDate, UserStatus.Online);
             }
         }
 
-        public void Logout(string userId)
+        public void Logout()
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId), "Logging in userId must not be empty");
-
             DateTime logoutTime = DateTime.Now;
-            var user = _userRepository.GetUserById(userId);
+            var user = _userService.GetMe();
+            user.Status = UserStatus.Offline;
+            user.StatusChangedDateTime = logoutTime;
 
-            if (user == null)
-                throw new AuthenticationException($"Logging out user '{userId}' cannot find!");
+            if (!_userService.CreateOrUpdate(user))
+                throw new AuthenticationException($"Cannot set logout status to '{user.Id}'");
 
-            user.Status = (int)UserStatus.Online;
-            user.StatusLastChanged = DateTime.Now;
-
-            if (!_userRepository.Update(user))
-                throw new AuthenticationException($"Cannot set logout status to '{userId}'");
-
-            foreach (var chatId in user.ChatsIds)
+            foreach (var chatId in user.ChatIds)
             {
-                _messageService.SendMessage(chatId, new TextMessage()
-                {
-                    Date = logoutTime,
-                    SenderId = user.Id,
-                    ChatId = chatId,
-                    Text = "Logout"
-                });
+                _messageSender.SendUserStatusMessage(chatId, user.Id, logoutTime, UserStatus.Offline);
             }
         }
     }

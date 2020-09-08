@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using NetChat2.Models;
 using NetChat2.Persistance;
 
@@ -85,6 +86,27 @@ namespace NetChat2.Services
             string userId = Environment.UserName.ToUpper();
             Properties.Settings.Default.UserId = userId;
             Properties.Settings.Default.Save();
+        }
+
+
+        public int GetUsersCount()
+        {
+            return _userRepository.GetAll().Length;
+        }
+
+        public bool CreateOrUpdate(params User[] users)
+        {
+            return _userRepository
+                .CreateOrUpdate(users.Select(u => new StoredUserData()
+                {
+                    Id = u.Id,
+                    Surname = u.Surname,
+                    Name = u.Name,
+                    Lastname = u.Lastname,
+                    Status = (int)u.Status,
+                    StatusLastChanged = u.StatusChangedDateTime,
+                    ChatsIds = u.ChatIds
+                }).ToArray());
         }
     }
 }

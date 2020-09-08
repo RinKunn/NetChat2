@@ -10,5 +10,6 @@ namespace NetChat2.Persistance
     {
         StoredChatData GetChatById(int id);
         bool AddChat(string title, string authorId, string path, Encoding encoding, string description = null);
+        int ChatsCount();
     }
 }

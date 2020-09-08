@@ -29,7 +29,7 @@ namespace NetChat2
 
             builder.RegisterType<DefaultUserService>().As<IUserService>().InstancePerLifetimeScope();
             builder.RegisterType<DefaultMessageService>().As<IMessageService>().InstancePerLifetimeScope();
-            builder.RegisterType<DefaultChatLoader>().As<IChatLoader>().InstancePerLifetimeScope();
+            builder.RegisterType<DefaultChatLoader>().As<IChatService>().InstancePerLifetimeScope();
             builder.RegisterType<DefaultMessageHub>().As<IMessageHub>().SingleInstance();
 
             builder.RegisterType<MainViewModel>();

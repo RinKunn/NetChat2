@@ -3,22 +3,36 @@ using GalaSoft.MvvmLight;
 using NetChat2.Services;
 using GalaSoft.MvvmLight.CommandWpf;
 using System.Windows.Input;
+using NetChat2.ViewModel.Messages;
+using NetChat2.Models;
 
 namespace NetChat2.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        public MessengerViewModel MessengerViewModel { get; private set; }
         private readonly IAuthentication _authentication;
-        private readonly string _userId;
+        private readonly IMessageHub messageHub;
+        private readonly IUserService userService;
+        private readonly Chat _chat;
 
-        public MainViewModel(IChatLoader chatLoader, IMessageHub messageHub, IAuthentication authentication, IUserService userService)
+        public MessengerViewModel MessengerViewModel { get; private set; }
+
+
+        public MainViewModel(
+            IChatService chatService, 
+            IMessageHub messageHub, 
+            IAuthentication authentication, 
+            IUserService userService)
         {
+            var init = new InitingService(chatService, userService);
+            init.InitIfNotInited();
+
             _authentication = authentication;
-            var chat = chatLoader.LoadChat(1);
+            var chat = chatService.GetChat(1);
             if (chat == null) throw new ArgumentNullException(nameof(chat));
-            MessengerViewModel = new MessengerViewModel(chat, messageHub, userService);
-            _userId = userService.GetMyUserId();
+
+            MessengerViewModel = new MessengerViewModel(chat);
+            Subcribe(chat);
         }
 
         private ICommand _logonCommand;
@@ -35,12 +49,28 @@ namespace NetChat2.ViewModel
 
         private void Logon()
         {
-            _authentication.Login(_userId);
+            _authentication.Login();
         }
 
         private void Logout()
         {
-            _authentication.Logout(_userId);
+            _authentication.Logout();
+        }
+
+
+        private void Subcribe(Chat chat)
+        {//TODO переделать
+            messageHub.Subscribe(chat.ChatData.Id, (message) =>
+            {
+                MessengerInstance.Send<MessageReceived>(
+                    new MessageReceived(new TextMessage()
+                    {
+                        ChatId = chat.ChatData.Id,
+                        Date = message.DateTime,
+                        Sender = userService.GetUser(message.UserName),
+                        Text = message.Text
+                    }));
+            });
         }
     }
 }

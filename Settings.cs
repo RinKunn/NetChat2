@@ -9,8 +9,6 @@ namespace NetChat2
     public class UserConfiguration 
     {
         public string UserId { get; set; }
-        public string LoginMessageString { get; set; }
-        public string LogoutMessageString { get; set; }
 
         public UserConfiguration()
         {

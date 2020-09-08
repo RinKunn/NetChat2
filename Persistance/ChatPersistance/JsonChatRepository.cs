@@ -48,7 +48,7 @@ namespace NetChat2.Persistance
 
         public StoredChatData GetChatById(int id)
         {
-            if (!File.Exists(_path)) return null;
+            if (!File.Exists(_path) || (new FileInfo(_path)).Length == 0) return null;
 
             return JsonConvert
                 .DeserializeObject<List<StoredChatData>>(File.ReadAllText(_path))

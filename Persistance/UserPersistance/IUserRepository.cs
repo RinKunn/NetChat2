@@ -14,11 +14,13 @@ namespace NetChat2.Persistance
 
         bool Update(StoredUserData userData);
 
-        //void ChangeStatus(string userId, UserStatus userStatus);
-
         void IncludeToChat(string userId, int chatId);
 
         int OnlineUsersCount(IEnumerable<string> userIds = null);
+
+        int Count();
+
+        bool CreateOrUpdate(params StoredUserData[] storedUsers);
     }
 
 }

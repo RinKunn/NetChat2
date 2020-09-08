@@ -27,5 +27,12 @@ namespace NetChat2.Services
                 message.Text,
                 message.Date));
         }
+
+        public void SendUserStatusMessage(int chatId, string userId, DateTime dateTime, UserStatus userStatus)
+        {
+            var chatData = _chatRepository.GetChatById(chatId);
+            var sender = new MessageFileSender(chatData.SourcePath, Encoding.GetEncoding(chatData.SourceEncodingName));
+            sender.SendUserStatusMessage(userId, dateTime, userStatus == UserStatus.Online);
+        }
     }
 }

@@ -21,14 +21,14 @@ namespace NetChat2.ViewModel
         public string Description { get; }
         public ObservableCollection<User> Users { get; }
 
-        public ChatInfoViewModel(ChatData chat)
-            : this(chat, Locator.Current.GetService<IChatLoader>()) { }
+        public ChatInfoViewModel(Chat chat)
+            : this(chat, Locator.Current.GetService<IChatService>()) { }
 
-        private ChatInfoViewModel(ChatData chat, IChatLoader chatLoader)
+        private ChatInfoViewModel(Chat chat, IChatService chatService)
         {
-            Title = chat.Title;
-            Description = chat.Description;
-            Users = new ObservableCollection<User>(chatLoader.LoadChatUsers(chat.Id));
+            Title = chat.ChatData.Title;
+            Description = chat.ChatData.Description;
+            Users = new ObservableCollection<User>(chatService.LoadUsersFromChat(chat.ChatData.Id));
         }
 
         private ChatInfoViewModel() { }

@@ -31,21 +31,13 @@ namespace NetChat2.ViewModel
         }
 
 
-        public MessengerViewModel(Chat chat, IMessageHub hub, IUserService userService)
+        public MessengerViewModel(Chat chat)
         {
             Header = new ChatHeaderViewModel(chat);
             Area = new ChatAreaViewModel(chat);
             Info = ChatInfoViewModel.Hidden();
 
-            hub.Subscribe(chat.Id, (message) => MessengerInstance.Send<MessageReceived>(
-                new MessageReceived(
-                    message.DateTime,
-                    userService.GetUser(message.UserName),
-                    message.Text,
-                    chat.User)
-                ));
-
-            MessengerInstance.Register<ShowViewMessage>(this, "info", (m) => Info = new ChatInfoViewModel(m.Chat));
+            //MessengerInstance.Register<ShowViewMessage>(this, "info", (m) => Info = new ChatInfoViewModel(m.Chat));
         }
     }
 }

@@ -34,5 +34,14 @@ namespace NetChat2.Properties {
                 this["UserId"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Tradematic LLC\\Tradematic Trader")]
+        public string ChatsDir {
+            get {
+                return ((string)(this["ChatsDir"]));
+            }
+        }
     }
 }
