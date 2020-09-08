@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace NetChat2.Connector
+namespace NetChat2.Api
 {
+
+    [Obsolete("Устарела", true)]
     public class FileNetchatHub : INetchatHub
     {
         private readonly Encoding encoding;
@@ -34,7 +36,7 @@ namespace NetChat2.Connector
         private void OnFileChangedHandler(object sender, FileSystemEventArgs e)
         {
             if (e.Name != _filename) return;
-            string newLine = FileReadHelper.ReadLastLine(_path, encoding);
+            string newLine = FileHelper.ReadLastLine(_path, encoding);
             OnMessageReceived?.Invoke(new NetChatMessage(newLine));
         }
 
@@ -65,7 +67,7 @@ namespace NetChat2.Connector
 
         public async Task<IEnumerable<NetChatMessage>> LoadMessages(CancellationToken token = default, int count = 0)
         {
-            var lines = await FileReadHelper.ReadAllLinesAsync(_path, encoding, count, token);
+            var lines = await FileHelper.ReadAllLinesAsync(_path, encoding, count, token);
             return lines.Select(l => new NetChatMessage(l));
         }
     }

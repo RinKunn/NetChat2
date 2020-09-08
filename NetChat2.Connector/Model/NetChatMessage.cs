@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace NetChat2.Connector
+namespace NetChat2.Api
 {
     public class NetChatMessage
     {
@@ -23,6 +23,13 @@ namespace NetChat2.Connector
             _message = message.Replace("\n", " ").Replace("  ", " ");
         }
 
+        public NetChatMessage(string username, string message, DateTime dateTime)
+        {
+            _datetime = dateTime;
+            _username = username ?? throw new ArgumentNullException(nameof(username));
+            _message = message.Replace("\n", " ").Replace("  ", " ");
+        }
+
         public NetChatMessage(string line)
         {
             if (string.IsNullOrEmpty(line))
@@ -35,10 +42,10 @@ namespace NetChat2.Connector
         public override string ToString()
         {
             string res = string.Empty;
-            if(_message.Contains("\n"))
+            if (_message.Contains("\n"))
             {
                 var messages = _message.Split('\n');
-                for(int i = 0; i < messages.Length; i++)
+                for (int i = 0; i < messages.Length; i++)
                     res += $"{_datetime.ToString(DATE_FORMAT)}|{_username.PadRight(USERNAME_AREA_SIZE)}> {_message}" + (i == messages.Length - 1 ? "" : "\n");
             }
             else

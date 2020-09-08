@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NetChat2.Connector;
+using NetChat2.Api;
 
 namespace NetChat2.Services
 {

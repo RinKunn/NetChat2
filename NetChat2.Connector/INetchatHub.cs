@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace NetChat2.Connector
+namespace NetChat2.Api
 {
-    public delegate void OnMessageReceivedHandler(NetChatMessage message);
 
+    [Obsolete("Устарела", true)]
     public interface INetchatHub : IDisposable
     {
         string SourcePath { get; }

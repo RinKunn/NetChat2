@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 
-namespace NetChat2.Connector.Tests
+namespace NetChat2.Api.Tests
 {
     [TestFixture]
     class FileNetchatHubTests

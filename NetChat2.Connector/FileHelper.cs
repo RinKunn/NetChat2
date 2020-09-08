@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace NetChat2.Connector
+namespace NetChat2.Api
 {
-    public static class FileReadHelper
+    public static class FileHelper
     {
         /// <summary>
         /// Read last line of file
@@ -119,50 +119,5 @@ namespace NetChat2.Connector
         
         
 
-
-
-        
-
-        public static string[] ReadAllLinesByReadingEach(string path, int count)
-        {
-            return ReadAllLinesByReadingEach(path, count, Encoding.UTF8, "\n");
-        }
-        public static string[] ReadAllLinesByReadingEach(string path, int count, Encoding encoding, string newline)
-        {
-            int charsize = encoding.GetByteCount("\n");
-            List<string> lines = new List<string>();
-            byte[] buffer = encoding.GetBytes(newline);
-            byte[] linesBuffer = null;
-            using (FileStream stream = new FileStream(path, FileMode.Open))
-            {
-                long endpos = stream.Length / charsize;
-                long lastPosition = stream.Length;
-                for (long pos = charsize; pos <= endpos; pos += charsize)
-                {
-                    stream.Seek(-pos, SeekOrigin.End);
-                    stream.Read(buffer, 0, buffer.Length); // читаем символ
-
-                    if (encoding.GetString(buffer) == newline && stream.Length - stream.Position > charsize)
-                    {
-                        linesBuffer = new byte[lastPosition - stream.Position];
-                        lastPosition = stream.Position;
-                        stream.Read(linesBuffer, 0, linesBuffer.Length);
-
-                        lines.Add(Regex.Replace(encoding.GetString(linesBuffer), @"[\u0000-\u001F]", string.Empty));
-
-                    }
-                    if (pos == endpos)
-                    {
-                        stream.Seek(-pos, SeekOrigin.End);
-                        linesBuffer = new byte[lastPosition];
-                        stream.Read(linesBuffer, 0, linesBuffer.Length);
-                        lines.Add(Regex.Replace(encoding.GetString(linesBuffer), @"[\u0000-\u001F]", string.Empty));
-                    }
-                    if (lines.Count == count) break;
-                }
-            }
-            lines.Reverse();
-            return lines.ToArray();
-        }
     }
 }

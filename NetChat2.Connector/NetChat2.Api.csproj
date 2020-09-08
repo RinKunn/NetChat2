@@ -7,8 +7,8 @@
     <ProjectGuid>{092DBFA1-C611-4E80-A7B5-20880C65FAB8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NetChat2.Connector</RootNamespace>
-    <AssemblyName>NetChat2.Connector</AssemblyName>
+    <RootNamespace>NetChat2.Api</RootNamespace>
+    <AssemblyName>NetChat2.Api</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -42,10 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileReadHelper.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="FileNetchatHub.cs" />
+    <Compile Include="Messaging\MessageLoader.cs" />
+    <Compile Include="Messaging\MessageSender.cs" />
+    <Compile Include="Model\UserStatusInfo.cs" />
+    <Compile Include="Receiver\IMessageReceiver.cs" />
     <Compile Include="INetchatHub.cs" />
-    <Compile Include="NetChatMessage.cs" />
+    <Compile Include="Receiver\MessageReceiver.cs" />
+    <Compile Include="Receiver\MessageRecieverEvents.cs" />
+    <Compile Include="Model\NetChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

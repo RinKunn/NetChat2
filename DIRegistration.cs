@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Autofac;
-using NetChat2.Connector;
+using NetChat2.Api;
 using NetChat2.Models;
 using NetChat2.Services;
 using NetChat2.ViewModel;

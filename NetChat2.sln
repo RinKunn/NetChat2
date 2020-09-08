@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetChat2", "NetChat2.csproj", "{6AB64EDF-7D39-483E-AED6-CDA8842E70E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetChat2.Connector", "NetChat2.Connector\NetChat2.Connector.csproj", "{092DBFA1-C611-4E80-A7B5-20880C65FAB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetChat2.Api", "NetChat2.Connector\NetChat2.Api.csproj", "{092DBFA1-C611-4E80-A7B5-20880C65FAB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetChat2.Connector.Tests", "NetChat2.Connector.Tests\NetChat2.Connector.Tests.csproj", "{09ACD252-6445-403E-BF8A-73ED86E175A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetChat2.Api.Tests", "NetChat2.Connector.Tests\NetChat2.Api.Tests.csproj", "{09ACD252-6445-403E-BF8A-73ED86E175A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetChat2.Tests", "NetChat2.Tests\NetChat2.Tests.csproj", "{1E7E844D-030A-4529-94BB-D8FCA4710D23}"
 EndProject
