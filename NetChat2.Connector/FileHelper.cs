@@ -116,8 +116,5 @@ namespace NetChat2.Api
             }
             return (lastLines == 0 ? lines.ToArray() : lines.Skip(Math.Max(0, lines.Count - lastLines)).ToArray());
         }
-        
-        
-
     }
 }

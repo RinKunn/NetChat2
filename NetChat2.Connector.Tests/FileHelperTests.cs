@@ -9,7 +9,7 @@ using System.Text;
 namespace NetChat2.Api.Tests
 {
     [TestFixture]
-    public class FileReadHelperTests
+    public class FileHelperTests
     {
         private string filePath;
         private string filePathBigSize;

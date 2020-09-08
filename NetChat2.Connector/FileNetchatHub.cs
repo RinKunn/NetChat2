@@ -9,7 +9,7 @@ using System.Threading;
 namespace NetChat2.Api
 {
 
-    [Obsolete("Устарела", true)]
+    [Obsolete("Use 'MessageReceiver' class", false)]
     public class FileNetchatHub : INetchatHub
     {
         private readonly Encoding encoding;

@@ -6,7 +6,7 @@ using System.Threading;
 namespace NetChat2.Api
 {
 
-    [Obsolete("Устарела", true)]
+    [Obsolete("Use 'MessageReceiver' class", false)]
     public interface INetchatHub : IDisposable
     {
         string SourcePath { get; }

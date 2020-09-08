@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetChat2.Api
 {
@@ -17,6 +18,15 @@ namespace NetChat2.Api
         public NetChatMessage[] LoadMessages(int limit = 0)
         {
             var lines = FileHelper.ReadAllLines(_filePath, _encoding, limit);
+            return lines
+                .Select(l => new NetChatMessage(l))
+                .Where(m => m.Text != "Logon" && m.Text != "Logout")
+                .ToArray();
+        }
+
+        public async Task<NetChatMessage[]> LoadMessagesAsync(int limit = 0)
+        {
+            var lines = await FileHelper.ReadAllLinesAsync(_filePath, _encoding, limit);
             return lines
                 .Select(l => new NetChatMessage(l))
                 .Where(m => m.Text != "Logon" && m.Text != "Logout")

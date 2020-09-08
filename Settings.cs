@@ -13,13 +13,13 @@ namespace NetChat2
 
     public class Configuration : ISetting
     {
-        private string _dataFilePath;
+        private string _dataFilePath = "";
 
         public string DataFilePath => _dataFilePath;
 
         public void Init()
         {
-
+            _dataFilePath = "";
         }
     }
 }

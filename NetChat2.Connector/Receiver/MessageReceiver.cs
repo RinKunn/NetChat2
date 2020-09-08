@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 
-namespace NetChat2.Api.Receiver
+namespace NetChat2.Api
 {
-    public class MessageFileNotifier : IMessageReceiver
+    public class MessageReceiver : IMessageReceiver
     {
         private readonly Encoding _encoding;
         private readonly string _path;
@@ -16,7 +16,7 @@ namespace NetChat2.Api.Receiver
         public event OnUserLoggedOutHandler OnUserLoggedOut;
 
 
-        public MessageFileNotifier(string path, Encoding encoding)
+        public MessageReceiver(string path, Encoding encoding)
         {
             _encoding = encoding;
             _path = !string.IsNullOrWhiteSpace(path) ? Path.GetFullPath(path) : throw new ArgumentNullException(nameof(path));
