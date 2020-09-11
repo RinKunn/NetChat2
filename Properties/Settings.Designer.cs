@@ -23,12 +23,15 @@ namespace NetChat2.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Suevalov\\source\\repos\\NetChat2\\bin\\Debug\\netchattt2.txt")]
-        public string MessagesPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserId {
             get {
-                return ((string)(this["MessagesPath"]));
+                return ((string)(this["UserId"]));
+            }
+            set {
+                this["UserId"] = value;
             }
         }
     }

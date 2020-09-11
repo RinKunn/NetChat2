@@ -15,10 +15,10 @@ namespace NetChat2.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private readonly IChatService _chatService;
+        private readonly IMessengerService _chatService;
 
-        private ObservableCollection<Message> _messages;
-        public ObservableCollection<Message> Messages
+        private ObservableCollection<MessageViewModel> _messages;
+        public ObservableCollection<MessageViewModel> Messages
         {
             get => _messages;
             private set => Set(ref _messages, value);
@@ -38,13 +38,13 @@ namespace NetChat2.ViewModel
             private set => Set(ref _isConnected, value);
         }
 
-        public MainViewModel(IChatService chatService)
+        public MainViewModel(IMessengerService chatService)
         {
             _chatService = chatService;
             _chatService.NewMessageReceived += ChatService_NewMessageReceived;
         }
 
-        private void ChatService_NewMessageReceived(Message message)
+        private void ChatService_NewMessageReceived(MessageViewModel message)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace NetChat2.ViewModel
         {
             await Task.Delay(1000);
             var res = await _chatService.LoadAllMessages(50);
-            Messages = new ObservableCollection<Message>(res.ToList());
+            Messages = new ObservableCollection<MessageViewModel>(res.ToList());
             await _chatService.ConnectAsync();
             IsConnected = true;   
         }
@@ -99,8 +99,8 @@ namespace NetChat2.ViewModel
         // Copy message
         private ICommand _copyMessageCommand;
         public ICommand CopyMessageCommand => _copyMessageCommand ??
-            (_copyMessageCommand = new RelayCommand<Message>(CopyMessage));
-        private void CopyMessage(Message message)
+            (_copyMessageCommand = new RelayCommand<MessageViewModel>(CopyMessage));
+        private void CopyMessage(MessageViewModel message)
         {
             Clipboard.SetText(message.Text);
         }

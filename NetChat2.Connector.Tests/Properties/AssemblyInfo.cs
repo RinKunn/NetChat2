@@ -2,11 +2,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("NetChat2.Api.Tests")]
+[assembly: AssemblyTitle("NetChat2.FileMessaging.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("IT Organization")]
-[assembly: AssemblyProduct("NetChat2.Api.Tests")]
+[assembly: AssemblyProduct("NetChat2.FileMessaging.Tests")]
 [assembly: AssemblyCopyright("Copyright © IT Organization 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

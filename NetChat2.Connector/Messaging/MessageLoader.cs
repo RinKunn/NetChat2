@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
     public class MessageLoader
     {

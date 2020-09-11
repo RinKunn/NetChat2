@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
     public class NetChatMessage
     {

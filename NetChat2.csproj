@@ -65,6 +65,9 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>packages\NLog.4.7.4\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -108,14 +111,60 @@
     <Compile Include="Converters\BindingProxy.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BringNewItemIntoViewBehavior.cs" />
-    <Compile Include="Styles\WindowStyle.xaml.cs" />
-    <Compile Include="DIRegistration.cs" />
+    <Compile Include="MainWindowNew.xaml.cs">
+      <DependentUpon>MainWindowNew.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Chat.cs" />
+    <Compile Include="Models\ChatData.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\TextMessage.cs" />
+    <Compile Include="Models\UserStatus.cs" />
+    <Compile Include="Persistance\FileAttempts.cs" />
+    <Compile Include="Persistance\UsersStore\JsonUserRepository.cs" />
+    <Compile Include="Persistance\UsersStore\IUserRepository.cs" />
+    <Compile Include="Persistance\UsersStore\StoredUserData.cs" />
+    <Compile Include="Persistance\UsersStore\UserNotExistsExecption.cs" />
+    <Compile Include="Services\Authentication\IAuthentication.cs" />
+    <Compile Include="Services\Chat\DefaultChatService.cs" />
+    <Compile Include="Services\Chat\IChatService.cs" />
+    <Compile Include="Services\InitingService.cs" />
+    <Compile Include="Services\Messaging\NetChatMessageHub.cs" />
+    <Compile Include="Services\Messaging\NetChatMessageLoader.cs" />
+    <Compile Include="Services\Messaging\IMessageHub.cs" />
+    <Compile Include="Services\Messaging\IMessageLoader.cs" />
+    <Compile Include="Services\Messaging\IMessageSender.cs" />
+    <Compile Include="Services\Messaging\NetChatMessageSender.cs" />
+    <Compile Include="Services\User\DefaultUserService.cs" />
+    <Compile Include="Services\User\IUserService.cs" />
+    <Compile Include="Styles\WindowStyle.xaml.cs" />
+    <Compile Include="ServicesRegistration.cs" />
+    <Compile Include="Models\MessageViewModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Services\ChatService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ViewModel\Messenger\ChatAreaViewModel.cs" />
+    <Compile Include="ViewModel\Messenger\ChatHeaderViewModel.cs" />
+    <Compile Include="ViewModel\Messenger\DefaultMessageSender.cs" />
+    <Compile Include="ViewModel\Messenger\MessengerViewModel.cs" />
+    <Compile Include="ViewModel\InnerMessages\IInnerMessage.cs" />
+    <Compile Include="ViewModel\InnerMessages\MessageReceived.cs" />
+    <Compile Include="ViewModel\InnerMessages\ParticipantLoggedOutMessage.cs" />
+    <Compile Include="ViewModel\InnerMessages\ParticipantLoggedInMessage.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\TextMessageViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="Views\ChatAreaView.xaml.cs">
+      <DependentUpon>ChatAreaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChatHeaderView.xaml.cs">
+      <DependentUpon>ChatHeaderView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindowNew.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\WindowStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -132,6 +181,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\ChatAreaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChatHeaderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -167,9 +224,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="NetChat2.Connector\NetChat2.Api.csproj">
+    <ProjectReference Include="NetChat2.Connector\NetChat2.FileMessaging.csproj">
       <Project>{092dbfa1-c611-4e80-a7b5-20880c65fab8}</Project>
-      <Name>NetChat2.Api</Name>
+      <Name>NetChat2.FileMessaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

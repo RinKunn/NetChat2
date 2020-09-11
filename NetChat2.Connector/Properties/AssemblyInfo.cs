@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
-[assembly: AssemblyTitle("NetChat2.Api")]
+[assembly: AssemblyTitle("NetChat2.FileMessaging")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JSC RRDB")]
-[assembly: AssemblyProduct("NetChat2.Api")]
+[assembly: AssemblyProduct("NetChat2.FileMessaging")]
 [assembly: AssemblyCopyright("Copyright © IT Organization 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -2,9 +2,16 @@
 using System.IO;
 using System.Text;
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
-    public class MessageSender
+    public interface IMessageSender
+    {
+        void SendMessage(string userId, string textMessage, DateTime dateTime);
+        void SendUserStatusMessage(string userId, bool isOnlineStatus, DateTime dateTime);
+    }
+
+
+    public class MessageSender : IMessageSender
     {
         private readonly string _filePath;
         private readonly Encoding _encoding;

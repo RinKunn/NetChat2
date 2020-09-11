@@ -58,9 +58,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetChat2.Connector\NetChat2.Api.csproj">
+    <ProjectReference Include="..\NetChat2.Connector\NetChat2.FileMessaging.csproj">
       <Project>{092dbfa1-c611-4e80-a7b5-20880c65fab8}</Project>
-      <Name>NetChat2.Api</Name>
+      <Name>NetChat2.FileMessaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

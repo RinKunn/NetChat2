@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace NetChat2.Api.Tests
+namespace NetChat2.FileMessaging.Tests
 {
     [TestFixture]
     public class MessageBuildTests

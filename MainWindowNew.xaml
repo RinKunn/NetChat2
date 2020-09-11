@@ -1,0 +1,38 @@
+﻿<Window x:Class="NetChat2.MainWindowNew"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:Converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:vm="clr-namespace:NetChat2.ViewModel"
+        xmlns:view="clr-namespace:NetChat2.Views"
+        xmlns:convrt="clr-namespace:NetChat2.Converters"
+        xmlns:local="clr-namespace:NetChat2"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
+        mc:Ignorable="d"
+        Title="" Height="450" Width="800"
+        DataContext="{Binding MainWindowViewModel, Source={StaticResource ViewModelLocator}}"
+        Style="{StaticResource CustomWindowStyle}"
+        MinWidth="400">
+    
+    <i:Interaction.Triggers>
+        <i:EventTrigger>
+            <i:InvokeCommandAction Command="{Binding LogonCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding LogoutCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <view:ChatHeaderView DataContext="{Binding MessengerViewModel.Header}" VerticalAlignment="Top" Margin="0,-30,0,0" />
+        <view:ChatAreaView DataContext="{Binding MessengerViewModel.Area}" Grid.Row="1"/>
+    </Grid>
+</Window>

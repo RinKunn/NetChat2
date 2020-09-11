@@ -91,20 +91,6 @@ namespace NetChat2.Commands
     //    public NotifyTaskCompletion<TResult> Execution { get; private set; }
     //}
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public class RelayCommandAsync : IAsyncCommand
     {

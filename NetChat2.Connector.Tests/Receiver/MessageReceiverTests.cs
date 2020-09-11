@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace NetChat2.Api.Tests.Receiver
+namespace NetChat2.FileMessaging.Tests.Receiver
 {
     [TestFixture]
     public class MessageReceiverTests

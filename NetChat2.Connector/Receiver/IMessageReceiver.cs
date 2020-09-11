@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
     public interface IMessageReceiver : IDisposable
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Text;
 
-namespace NetChat2.Api.Tests
+namespace NetChat2.FileMessaging.Tests
 {
     [TestFixture]
     public class FileHelperTests

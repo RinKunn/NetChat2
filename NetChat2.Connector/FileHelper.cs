@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
     public static class FileHelper
     {

@@ -3,25 +3,25 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using NetChat2.Api;
+using NetChat2.FileMessaging;
 using NetChat2.Models;
 using System.Threading;
 
 namespace NetChat2.Services
 {
-    public delegate void NewMessageReceivedHandler(Message message);
+    public delegate void NewMessageReceivedHandler(MessageViewModel message);
 
-    public interface IChatService : IDisposable
+    public interface IMessengerService : IDisposable
     {
         event NewMessageReceivedHandler NewMessageReceived;
 
         Task SendMessageAsync(string message);
         Task ConnectAsync();
         
-        Task<IEnumerable<Message>> LoadAllMessages(int count = 0);
+        Task<IEnumerable<MessageViewModel>> LoadAllMessages(int count = 0);
     }
 
-    public class ChatService : IChatService
+    public class ChatService : IMessengerService
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public event NewMessageReceivedHandler NewMessageReceived;
@@ -51,9 +51,9 @@ namespace NetChat2.Services
             }
             logger.Debug("Recieved new message from '{0}': {1}", message.UserName, message.Text);
             NewMessageReceived?.Invoke(
-                new Message(
+                new MessageViewModel(
                     message.DateTime, 
-                    new User(message.UserName), 
+                    new User(), 
                     message.Text, 
                     message.UserName == _user.Name,
                     message.UserName == _user.Name));
@@ -69,10 +69,10 @@ namespace NetChat2.Services
             await _hub.SendMessageAsync(new NetChatMessage(_user.Name, message));
         }
 
-        public async Task<IEnumerable<Message>> LoadAllMessages(int count = 0)
+        public async Task<IEnumerable<MessageViewModel>> LoadAllMessages(int count = 0)
         {
             var res = await _hub.LoadMessages(tokenSource.Token, 50);
-            return res.Select(message => new Message(message.DateTime, new User(message.UserName), message.Text, message.UserName == _user.Name, true));
+            return res.Select(message => new MessageViewModel(message.DateTime, new User(), message.Text, message.UserName == _user.Name, true));
         }
 
         public void Dispose()

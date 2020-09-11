@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using NUnit.Framework;
-using NetChat2.Api;
+using NetChat2.FileMessaging;
 
-namespace NetChat2.Api.Tests.Messaging
+namespace NetChat2.FileMessaging.Tests.Messaging
 {
     [TestFixture]
     class MessageLoaderTests

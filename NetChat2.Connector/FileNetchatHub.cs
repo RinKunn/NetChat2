@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
 
     [Obsolete("Use 'MessageReceiver' class", false)]

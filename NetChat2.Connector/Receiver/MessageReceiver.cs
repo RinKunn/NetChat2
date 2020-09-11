@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace NetChat2.Api
+namespace NetChat2.FileMessaging
 {
     public class MessageReceiver : IMessageReceiver
     {
